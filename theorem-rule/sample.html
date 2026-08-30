@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Theorem サンプルデッキ</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#F8F6F2; --card:#FFFFFF;
+  --ink:#26333F; --ink-2:#4E5F60; --ink-3:#8B98A4;
+  --line:#E6E1D9; --fill:#F1ECE4;
+  --accent:#D9822B; --neg:#DC4A4A; --pos:#12776A;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0; background:#171410; color:var(--ink);
+  font-family:"Lato","Noto Sans JP",sans-serif;
+  display:flex; align-items:center; justify-content:center;
+  min-height:100vh; overflow:hidden;
+}
+h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-serif; }
+b,strong{ font-weight:700; }
+.formula{ font-family:"Lato",serif; font-style:italic; }
+.yhat{ position:relative; display:inline-block; }
+.yhat::after{ content:"^"; position:absolute; top:-.62em; left:50%; transform:translateX(-50%); font-size:.7em; font-style:normal; }
+
+.deck{
+  position:relative;
+  width:min(100vw, 177.78vh); height:min(56.25vw, 100vh);
+  container-type:size; overflow:hidden;
+  background:var(--paper);
+  outline:none;
+}
+.slide{ position:absolute; inset:0; display:none; flex-direction:column; padding:4.4cqw 5.2cqw 6cqw; }
+.slide.is-active{ display:flex; }
+
+/* 見出し。Paper系と同じ左オレンジ縦罫 */
+.pagehead{ font-size:2.3cqw; font-weight:700; line-height:1.3; margin:0 0 .8cqw; border-left:.3cqw solid var(--accent); padding-left:1cqw; color:var(--ink); }
+/* 主張。accent色の一文 — これから証明する命題 */
+.claim{ font-size:1.6cqw; font-weight:700; color:var(--accent); margin:0 0 1.8cqw; line-height:1.5; }
+.claim .hl{ color:var(--accent); }
+.lead{ font-size:1.3cqw; color:var(--ink-2); margin:0 0 1.6cqw; line-height:1.6; }
+.body{ flex:1; min-height:0; display:flex; flex-direction:column; }
+.caption{ text-align:center; font-size:1.05cqw; color:var(--ink-2); margin-top:1cqw; }
+.deckfoot{ position:absolute; right:5.2cqw; bottom:2.3cqw; font:400 .85cqw "Lato",sans-serif; color:var(--ink-3); font-variant-numeric:tabular-nums; }
+.footlogo{ position:absolute; left:5.2cqw; bottom:2.3cqw; font:800 1cqw "Lato",sans-serif; color:var(--ink); display:flex; align-items:center; gap:.5cqw; }
+.footlogo .dot{ width:.4cqw; height:1.1cqw; background:var(--accent); border-radius:1px; }
+
+/* reveal */
+.reveal{ opacity:0; transform:translateY(.6cqw); animation:revealIn .55s cubic-bezier(.2,.7,.3,1) forwards; animation-delay:calc(var(--i,0) * .12s); }
+@keyframes revealIn{ to{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion:reduce){ .reveal{ animation:none; opacity:1; transform:none; } }
+
+/* 表紙／クロージング：罫線ノート風の地（Theorem＝証明ノートのモチーフ） */
+.s-cover, .s-close{
+  background-image: repeating-linear-gradient(to bottom, transparent, transparent 5.4cqw, var(--line) 5.4cqw, var(--line) calc(5.4cqw + 1px));
+}
+.s-cover .body, .s-close .body{ flex-direction:column; justify-content:center; }
+.s-cover .cov-kicker{ font:700 1.3cqw "Lato",sans-serif; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 .9cqw; }
+.s-cover h1{ font-size:3.6cqw; font-weight:900; margin:0 0 1.2cqw; line-height:1.3; border-left:.35cqw solid var(--accent); padding-left:1.2cqw; max-width:66%; }
+.s-cover .cov-sub{ font-size:1.4cqw; color:var(--ink-2); margin:0 0 1.6cqw; max-width:62%; }
+.s-cover .cov-meta{ border-left:.22cqw solid var(--line); padding:.9cqw 0 .9cqw 1.3cqw; font-size:1.05cqw; color:var(--ink-3); max-width:62%; line-height:1.7; }
+.s-close h2{ font-size:3cqw; font-weight:900; color:var(--ink); margin:0; }
+.s-close .cite{ margin-top:1.6cqw; font-size:1cqw; color:var(--ink-3); max-width:60%; line-height:1.7; }
+
+/* 色スウォッチ */
+.swatchgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.2cqw; }
+.swatch{ background:var(--card); border:1px solid var(--line); border-radius:.6cqw; overflow:hidden; box-shadow:0 .15cqw .9cqw rgba(38,51,63,.06); }
+.swatch .fill{ height:4.2cqw; }
+.swatch .meta{ padding:.8cqw .9cqw 1cqw; }
+.swatch .name{ font:700 1cqw "Lato",monospace; margin:0; }
+.swatch .hex{ font:400 .8cqw "Lato",monospace; color:var(--ink-3); margin:.15cqw 0 0; }
+
+/* 文字specimen */
+.typespec{ display:flex; flex-direction:row; gap:2cqw; align-items:stretch; flex:1; }
+.typespec .item{ flex:1; background:var(--card); border:1px solid var(--line); border-radius:.6cqw; padding:2cqw 2.2cqw; box-shadow:0 .15cqw .9cqw rgba(38,51,63,.05); display:flex; flex-direction:column; justify-content:center; }
+.typespec .big{ font-size:1.9cqw; font-weight:700; margin:0 0 .6cqw; line-height:1.4; color:var(--ink); }
+.typespec .role{ font-size:.95cqw; color:var(--ink-3); }
+.typespec .role b{ color:var(--ink-2); }
+
+/* 入れ子ボックス図 */
+.nestwrap{ flex:1; display:flex; flex-direction:row; align-items:center; justify-content:center; gap:3cqw; }
+.nest{ border:.12cqw solid var(--line); border-radius:.6cqw; padding:1.4cqw; background:var(--card); }
+.nest .hd{ font-weight:700; font-size:1.1cqw; text-align:center; padding:.5cqw 0; border-radius:.35cqw; margin-bottom:1cqw; color:#fff; }
+.nest.lv1 .hd{ background:var(--ink-3); }
+.nest.lv2 .hd{ background:var(--ink-2); }
+.nest.lv3{ padding:1cqw 1.6cqw; }
+.nest.lv3 .hd{ background:var(--ink); font-size:1.05cqw; padding:.4cqw .8cqw; margin-bottom:0; }
+.nest .d{ font-size:.95cqw; color:var(--ink-2); max-width:16cqw; line-height:1.5; }
+
+/* 分布チャート */
+.distwrap{ flex:1; display:flex; flex-direction:row; align-items:center; justify-content:center; gap:5cqw; }
+.dist-col{ text-align:center; }
+.dist-col .lbl{ font-weight:700; font-size:1.15cqw; margin-bottom:1cqw; }
+.bars{ display:flex; align-items:flex-end; gap:.5cqw; height:11cqw; }
+.bars div{ width:1.6cqw; background:var(--ink); border-radius:.1cqw .1cqw 0 0; }
+.bars div.hi{ background:var(--accent); }
+.funnel{ width:9cqw; height:1.4cqw; background:var(--fill); margin:.6cqw auto 0; clip-path:polygon(15% 0,85% 0,65% 100%,35% 100%); }
+.dist-col .term{ font-size:1.1cqw; font-weight:700; color:var(--ink); margin-top:.4cqw; }
+.curve-wrap{ position:relative; width:16cqw; height:11cqw; }
+.curve-wrap svg{ width:100%; height:100%; }
+
+/* 数式ブロック */
+.formulawrap{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.6cqw; }
+.formula-big{ font-size:3cqw; color:var(--ink); }
+.legend{ display:flex; gap:2.4cqw; font-size:1.05cqw; color:var(--ink-2); }
+.legend b{ color:var(--ink); }
+
+/* 一般化→具体化 */
+.derivewrap{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.2cqw; }
+.case-pill{ background:var(--ink); color:#fff; font-weight:700; font-size:1.15cqw; padding:.6cqw 1.6cqw; border-radius:999px; align-self:flex-end; margin-right:8%; }
+.derive-row{ display:flex; flex-direction:row; align-items:center; gap:1.4cqw; width:100%; }
+.derive-col{ flex:1; display:flex; flex-direction:column; gap:.7cqw; }
+.derive-item{ background:var(--card); border:1px solid var(--line); border-radius:.4cqw; padding:.7cqw 1cqw; font-size:1.15cqw; }
+.derive-item .lbl{ font-size:.85cqw; color:var(--ink-3); display:block; margin-bottom:.2cqw; }
+.derive-arrow{ font-size:2.4cqw; color:var(--ink-3); font-weight:900; }
+
+/* ネットワーク図 */
+.netwrap{ flex:1; display:flex; flex-direction:row; align-items:center; justify-content:center; gap:3cqw; }
+.net-col{ text-align:center; }
+.net-col .lbl{ font-size:1.05cqw; font-weight:700; color:var(--ink-2); margin-bottom:.8cqw; }
+.net-col svg circle{ fill:var(--card); stroke:var(--ink); stroke-width:2; }
+.net-col svg line{ stroke:var(--ink-3); stroke-width:1.5; }
+.net-divider{ width:1px; height:70%; background:var(--line); align-self:center; }
+
+/* 比較表 */
+.dtable{ width:100%; border-collapse:collapse; font-size:1.15cqw; }
+.dtable th{ background:var(--fill); color:var(--ink); text-align:left; padding:1cqw 1.4cqw; font-weight:700; border-bottom:2px solid var(--line); }
+.dtable td{ padding:1.1cqw 1.4cqw; border-bottom:1px solid var(--line); color:var(--ink); }
+.dtable td.hi{ color:var(--accent); font-weight:700; }
+.dtable tr:last-child td{ border-bottom:none; }
+
+/* do / dont */
+.dodont{ display:grid; grid-template-columns:1fr 1fr; gap:1.4cqw; flex:1; }
+.dodont .col{ background:var(--card); border:1px solid var(--line); border-radius:.6cqw; padding:1.6cqw 1.8cqw; box-shadow:0 .15cqw .9cqw rgba(38,51,63,.05); }
+.dodont h3{ font:700 1cqw "Lato",sans-serif; letter-spacing:.05em; text-transform:uppercase; margin:0 0 1.1cqw; }
+.dodont .do h3{ color:var(--accent); } .dodont .dont h3{ color:var(--ink-3); }
+.dodont ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.9cqw; }
+.dodont li{ font-size:1.15cqw; color:var(--ink-2); padding-left:1.6cqw; position:relative; line-height:1.5; }
+.dodont .do li::before{ content:"○"; position:absolute; left:0; color:var(--accent); font-weight:700; }
+.dodont .dont li::before{ content:"×"; position:absolute; left:0; color:var(--ink-3); font-weight:700; }
+
+/* ファイル */
+.filecards{ display:flex; flex-direction:row; gap:1.4cqw; flex:1; align-items:center; }
+.filecards .fc{ flex:1; background:var(--card); border:1px solid var(--line); border-radius:.6cqw; padding:1.8cqw 1.9cqw; box-shadow:0 .15cqw .9cqw rgba(38,51,63,.05); }
+.filecards code{ display:inline-block; background:var(--fill); border-radius:.3cqw; padding:.35cqw .8cqw; font:700 1.1cqw "Lato",monospace; margin-bottom:.9cqw; color:var(--ink); }
+.filecards p{ font-size:1.1cqw; color:var(--ink-2); margin:0; line-height:1.6; }
+
+/* ナビ */
+.navhit{ position:absolute; top:0; bottom:0; width:14%; cursor:pointer; }
+.navhit.prev{ left:0; } .navhit.next{ right:0; }
+.arrow{ position:absolute; top:50%; transform:translateY(-50%); width:2.6cqw; height:2.6cqw; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--card); color:var(--ink-3); box-shadow:0 .2cqw 1cqw rgba(38,51,63,.14); font-size:1.2cqw; opacity:0; transition:opacity .15s; border:none; cursor:pointer; z-index:2; }
+.deck:hover .arrow{ opacity:.6; }
+.arrow:hover{ opacity:1 !important; color:var(--accent); }
+.arrow[disabled]{ opacity:.15 !important; cursor:default; }
+.arrow.prev{ left:1.3cqw; } .arrow.next{ right:1.3cqw; }
+.hint{ position:absolute; top:4.6cqw; right:5.2cqw; font:400 .95cqw "Lato",sans-serif; color:var(--ink-3); opacity:.7; z-index:2; }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck" tabindex="0">
+
+  <!-- 1. 表紙 -->
+  <section class="slide s-cover is-active">
+    <div class="body">
+      <p class="cov-kicker reveal" style="--i:0">Formula-Heavy Technical Training Slide — Design System</p>
+      <h1 class="reveal" style="--i:1">Theorem の設計ルール</h1>
+      <p class="cov-sub reveal" style="--i:2">統計・機械学習の研修資料のような、数式と図解を省略せず見せる16:9設計。主張は1行、証明は図か数式で。</p>
+      <p class="cov-meta reveal" style="--i:3">色・書体・見出しは <b style="color:var(--ink-2)">Paper / Ledger / Dojo</b> と共通。<br>この14枚は、このルールを、このデザイン自身で説明したもの。</p>
+    </div>
+    <div class="footlogo reveal" style="--i:4"><span class="dot"></span>THEOREM</div>
+  </section>
+
+  <!-- 2. 何のための型か -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">何のための型か</h2>
+    <p class="claim reveal" style="--i:1">数式を省略できない研修資料が対象。<span class="hl">主張は1行、証明は図か数式で</span>見せる。</p>
+    <div class="typespec reveal" style="--i:2">
+      <div class="item">
+        <p class="big">Dojo</p>
+        <p class="role">手順・構成の説明。箇条書きで<b>説明を尽くす</b></p>
+      </div>
+      <div class="item" style="border-color:var(--accent);">
+        <p class="big" style="color:var(--accent);">Theorem</p>
+        <p class="role">定義・導出・証明。結論を先に言い切り、<b>図か数式で裏付ける</b></p>
+      </div>
+    </div>
+    <div class="footlogo"><span class="dot"></span>THEOREM</div>
+    <div class="deckfoot">2</div>
+  </section>
+
+  <!-- 3. 骨格 -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">骨格</h2>
+    <p class="claim reveal" style="--i:1">見出し・主張・本文・フッターの4段構成。</p>
+    <div class="body reveal" style="--i:2; flex-direction:column; align-items:center; justify-content:center;">
+      <svg width="900" height="360" viewBox="0 0 900 360">
+        <rect x="4" y="4" width="892" height="352" rx="8" fill="#fff" stroke="#E6E1D9" stroke-width="2"/>
+        <rect x="36" y="28" width="6" height="28" fill="#D9822B"/>
+        <text x="56" y="49" font-size="16" font-weight="700" fill="#26333F" font-family="sans-serif">ページ見出し（.pagehead）</text>
+        <text x="40" y="90" font-size="16" font-weight="700" fill="#D9822B" font-family="sans-serif">主張（.claim）— これから証明する命題を1行で</text>
+        <rect x="40" y="112" width="820" height="180" rx="6" fill="#F1ECE4"/>
+        <text x="450" y="208" font-size="15" fill="#4E5F60" text-anchor="middle" font-family="sans-serif">本文（.body）— 図か数式、どちらか1つ</text>
+        <line x1="40" y1="308" x2="860" y2="308" stroke="#E6E1D9" stroke-width="2"/>
+        <text x="40" y="332" font-size="13" fill="#8B98A4" font-family="sans-serif">ロゴ（左下）</text>
+        <text x="820" y="332" font-size="13" fill="#8B98A4" text-anchor="end" font-family="sans-serif">ページ番号（右下）</text>
+      </svg>
+    </div>
+    <div class="footlogo"><span class="dot"></span>THEOREM</div>
+    <div class="deckfoot">3</div>
+  </section>
+
+  <!-- 4. 色 -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">色</h2>
+    <p class="claim reveal" style="--i:1">Paper系と<span class="hl">同じトークン</span>。深さは色相でなく明度で示す。</p>
+    <div class="body reveal" style="--i:2; flex-direction:column; justify-content:center;">
+      <div class="swatchgrid">
+        <div class="swatch"><div class="fill" style="background:#F8F6F2"></div><div class="meta"><p class="name">paper</p><p class="hex">#F8F6F2</p></div></div>
+        <div class="swatch"><div class="fill" style="background:#26333F"></div><div class="meta"><p class="name">ink</p><p class="hex">#26333F</p></div></div>
+        <div class="swatch"><div class="fill" style="background:#D9822B"></div><div class="meta"><p class="name">accent</p><p class="hex">#D9822B</p></div></div>
+        <div class="swatch"><div class="fill" style="background:#F1ECE4"></div><div class="meta"><p class="name">fill</p><p class="hex">#F1ECE4</p></div></div>
+      </div>
+    </div>
+    <p class="caption">元デッキは階層ごとに水色・オレンジ・紺と色相を変えていた。Theoremでは ink-3 → ink-2 → ink の明度階段に置き換える</p>
+    <div class="footlogo"><span class="dot"></span>THEOREM</div>
+    <div class="deckfoot">4</div>
+  </section>
+
+  <!-- 5. 文字 -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">文字</h2>
+    <p class="claim reveal" style="--i:1">数式の変数は<span class="hl">斜体</span>にして本文と区別する。</p>
+    <div class="typespec reveal" style="--i:2">
+      <div class="item">
+        <p class="big">重要語は<b style="color:var(--accent)">accent</b>で1〜2語だけ強調する</p>
+        <p class="role">主張の accent と<b>同じ役割</b>なので併用してよい</p>
+      </div>
+      <div class="item">
+        <p class="big formula" style="font-size:2.2cqw;">y = f(x; θ)</p>
+        <p class="role">変数は <b>Lato italic</b>、関数名・定数は立体のまま</p>
+      </div>
+    </div>
+    <div class="footlogo"><span class="dot"></span>THEOREM</div>
+    <div class="deckfoot">5</div>
+  </section>
+
+  <!-- 6. 入れ子ボックス図 -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">入れ子ボックス図</h2>
+    <p class="claim reveal" style="--i:1">「概念Aは概念Bを包括する」ことを示す図。<span class="hl">色相は1つ、明度で深さを示す</span>。</p>
+    <div class="nestwrap body reveal" style="--i:2">
+      <div class="nest lv1">
+        <div class="hd">人工知能</div>
+        <div class="nest lv2">
+          <div class="hd">機械学習</div>
+          <div class="nest lv3">
+            <div class="hd">深層学習</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="caption">外側ほど広い概念、内側ほど具体的な手法。3段まで――4段必要なら図を分ける</p>
+    <div class="footlogo"><span class="dot"></span>THEOREM</div>
+    <div class="deckfoot">6</div>
+  </section>
+
+  <!-- 7. 分布チャート -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">分布チャート</h2>
+    <p class="claim reveal" style="--i:1">確率変数には離散型と連続型がある。<span class="hl">強調範囲だけ accent</span> で塗る。</p>
+    <div class="distwrap body reveal" style="--i:2">
+      <div class="dist-col">
+        <p class="lbl">離散型確率分布</p>
+        <div class="bars">
+          <div style="height:20%"></div><div style="height:45%"></div><div style="height:70%"></div><div style="height:95%"></div><div style="height:80%" class="hi"></div><div style="height:55%" class="hi"></div><div style="height:30%"></div>
+        </div>
+        <div class="funnel"></div>
+        <p class="term">確率質量関数</p>
+      </div>
+      <div class="dist-col">
+        <p class="lbl">連続型確率分布</p>
+        <div class="curve-wrap">
+          <svg viewBox="0 0 200 130" preserveAspectRatio="none">
+            <path d="M 10 120 Q 60 120 90 20 Q 120 120 190 120" fill="none" stroke="#26333F" stroke-width="2.5"/>
+            <path d="M 90 20 Q 105 50 112 120 L 90 120 Z" fill="#D9822B" fill-opacity=".28"/>
+          </svg>
+        </div>
+        <div class="funnel"></div>
+        <p class="term">確率密度関数</p>
+      </div>
+    </div>
+    <div class="footlogo"><span class="dot"></span>THEOREM</div>
+    <div class="deckfoot">7</div>
+  </section>
+
+  <!-- 8. 数式ブロック -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">数式ブロック</h2>
+    <p class="claim reveal" style="--i:1">MAEは以下のように与えられる。<span class="hl">数式だけを置き去りにしない</span>。</p>
+    <div class="formulawrap body reveal" style="--i:2">
+      <p class="formula-big formula">MAE = <span style="font-size:.6em;">1/n</span> Σ |y − <span class="yhat">y</span>|</p>
+      <div class="legend"><span><b class="formula">y</b> ：実測値</span><span><b class="formula yhat">y</b> ：予測値</span><span><b class="formula">n</b> ：サンプル数</span></div>
+    </div>
+    <div class="footlogo"><span class="dot"></span>THEOREM</div>
+    <div class="deckfoot">8</div>
+  </section>
+
+  <!-- 9. 一般化→具体化 -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">一般化 → 具体化</h2>
+    <p class="claim reveal" style="--i:1">一般形を、特定のケースに当てはめて<span class="hl">具体式で示す</span>。</p>
+    <div class="derivewrap body reveal" style="--i:2">
+      <div class="case-pill">ポアソン回帰の場合</div>
+      <div class="derive-row">
+        <div class="derive-col">
+          <div class="derive-item"><span class="lbl">モデル</span><span class="formula">f(xᵢ; θ)</span></div>
+          <div class="derive-item"><span class="lbl">連結関数</span><span class="formula">g(y)</span></div>
+        </div>
+        <div class="derive-arrow">⇒</div>
+        <div class="derive-col">
+          <div class="derive-item"><span class="lbl">モデル</span><span class="formula">Poisson(λ)</span></div>
+          <div class="derive-item"><span class="lbl">連結関数</span><span class="formula">g(y) = ln(y)</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="footlogo"><span class="dot"></span>THEOREM</div>
+    <div class="deckfoot">9</div>
+  </section>
+
+  <!-- 10. ネットワーク図 -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">ネットワーク図</h2>
+    <p class="claim reveal" style="--i:1">ノードは<span class="hl">すべて同じ見た目</span>、層による色分けはしない。</p>
+    <div class="netwrap body reveal" style="--i:2">
+      <div class="net-col">
+        <p class="lbl">隠れ層1層</p>
+        <svg width="180" height="140">
+          <line x1="20" y1="30" x2="90" y2="20" /><line x1="20" y1="30" x2="90" y2="50" /><line x1="20" y1="30" x2="90" y2="80" />
+          <line x1="20" y1="70" x2="90" y2="20" /><line x1="20" y1="70" x2="90" y2="50" /><line x1="20" y1="70" x2="90" y2="80" />
+          <line x1="20" y1="110" x2="90" y2="20" /><line x1="20" y1="110" x2="90" y2="50" /><line x1="20" y1="110" x2="90" y2="80" />
+          <line x1="90" y1="20" x2="160" y2="65" /><line x1="90" y1="50" x2="160" y2="65" /><line x1="90" y1="80" x2="160" y2="65" />
+          <circle cx="20" cy="30" r="9"/><circle cx="20" cy="70" r="9"/><circle cx="20" cy="110" r="9"/>
+          <circle cx="90" cy="20" r="9"/><circle cx="90" cy="50" r="9"/><circle cx="90" cy="80" r="9"/>
+          <circle cx="160" cy="65" r="9"/>
+        </svg>
+      </div>
+      <div class="net-divider"></div>
+      <div class="net-col">
+        <p class="lbl">隠れ層2層以上（深層学習）</p>
+        <svg width="220" height="140">
+          <line x1="15" y1="35" x2="75" y2="20"/><line x1="15" y1="35" x2="75" y2="70"/><line x1="15" y1="70" x2="75" y2="20"/><line x1="15" y1="70" x2="75" y2="70"/><line x1="15" y1="105" x2="75" y2="70"/><line x1="15" y1="105" x2="75" y2="120"/>
+          <line x1="75" y1="20" x2="140" y2="45"/><line x1="75" y1="70" x2="140" y2="45"/><line x1="75" y1="70" x2="140" y2="95"/><line x1="75" y1="120" x2="140" y2="95"/>
+          <line x1="140" y1="45" x2="200" y2="65"/><line x1="140" y1="95" x2="200" y2="65"/>
+          <circle cx="15" cy="35" r="9"/><circle cx="15" cy="70" r="9"/><circle cx="15" cy="105" r="9"/>
+          <circle cx="75" cy="20" r="9"/><circle cx="75" cy="70" r="9"/><circle cx="75" cy="120" r="9"/>
+          <circle cx="140" cy="45" r="9"/><circle cx="140" cy="95" r="9"/>
+          <circle cx="200" cy="65" r="9"/>
+        </svg>
+      </div>
+    </div>
+    <p class="caption">隠れ層の数が増えるほどモデルの表現能力は高くなる</p>
+    <div class="footlogo"><span class="dot"></span>THEOREM</div>
+    <div class="deckfoot">10</div>
+  </section>
+
+  <!-- 11. 比較表 -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">比較表</h2>
+    <p class="claim reveal" style="--i:1">見出し行は <span class="hl">--fill の地に --ink の太字</span>。</p>
+    <div class="body reveal" style="--i:2; flex-direction:column; justify-content:center;">
+      <table class="dtable">
+        <thead><tr><th>一般化線形モデルの種類</th><th>目的変数の分布</th><th>連結関数</th></tr></thead>
+        <tbody>
+          <tr><td>ポアソン回帰</td><td>ポアソン分布</td><td class="hi formula">g(y) = ln(y)</td></tr>
+          <tr><td>ロジスティック回帰</td><td>二項分布</td><td class="hi formula">g(y) = ln(y/1−y)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footlogo"><span class="dot"></span>THEOREM</div>
+    <div class="deckfoot">11</div>
+  </section>
+
+  <!-- 12. ルール -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">ルール</h2>
+    <p class="claim reveal" style="--i:1">迷ったら、<span class="hl">「変数の意味を省略していないか」</span>を基準にする。</p>
+    <div class="dodont reveal" style="--i:2">
+      <div class="col do">
+        <h3>やる</h3>
+        <ul>
+          <li>主張は1行のaccent文、証明は図か数式</li>
+          <li>数式には必ず変数の凡例を添える</li>
+          <li>階層・深さは色相でなく明度で示す</li>
+        </ul>
+      </div>
+      <div class="col dont">
+        <h3>やらない</h3>
+        <ul>
+          <li>図を簡略化しすぎて数式の意味を歪める</li>
+          <li>入れ子図の各階層に別の色相を使う</li>
+          <li>ノードを役割ごとに色分けする</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footlogo"><span class="dot"></span>THEOREM</div>
+    <div class="deckfoot">12</div>
+  </section>
+
+  <!-- 13. ファイル -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">ファイル</h2>
+    <p class="claim reveal" style="--i:1">ルールと見本を<span class="hl">分けて置く</span>。</p>
+    <div class="filecards reveal" style="--i:2">
+      <div class="fc"><code>rules.html</code><p>この型のルールと根拠</p></div>
+      <div class="fc"><code>sample.html</code><p>ルールをルール自身で説明した見本デッキ（この14枚）</p></div>
+    </div>
+    <div class="footlogo"><span class="dot"></span>THEOREM</div>
+    <div class="deckfoot">13</div>
+  </section>
+
+  <!-- 14. クロージング -->
+  <section class="slide s-close">
+    <div class="body">
+      <h2 class="reveal" style="--i:0">Q.E.D.</h2>
+      <p class="cite reveal" style="--i:1">色・書体・見出しは Paper / Ledger / Dojo と共通。参照：BrainPad「分析の基礎（モデリング）」の構成パターンを分析し一般化</p>
+    </div>
+    <div class="footlogo"><span class="dot"></span>THEOREM</div>
+  </section>
+
+  <button class="arrow prev" id="prev" aria-label="前のスライド">‹</button>
+  <button class="arrow next" id="next" aria-label="次のスライド">›</button>
+  <div class="navhit prev" id="hitPrev"></div>
+  <div class="navhit next" id="hitNext"></div>
+  <div class="hint" id="hint">← → で送る</div>
+</div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  var deck = document.getElementById('deck');
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+
+  function render(){
+    slides.forEach(function(s, idx){ s.classList.toggle('is-active', idx === i); });
+    prevBtn.disabled = i === 0;
+    nextBtn.disabled = i === slides.length - 1;
+  }
+  function go(delta){
+    var n = i + delta;
+    if(n < 0 || n >= slides.length) return;
+    i = n; render();
+  }
+  prevBtn.addEventListener('click', function(){ go(-1); });
+  nextBtn.addEventListener('click', function(){ go(1); });
+  document.getElementById('hitPrev').addEventListener('click', function(){ go(-1); });
+  document.getElementById('hitNext').addEventListener('click', function(){ go(1); });
+  deck.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === ' '){ go(1); e.preventDefault(); }
+    if(e.key === 'ArrowLeft'){ go(-1); e.preventDefault(); }
+  });
+  window.addEventListener('keydown', function(e){
+    if(document.activeElement === document.body){
+      if(e.key === 'ArrowRight'){ go(1); }
+      if(e.key === 'ArrowLeft'){ go(-1); }
+    }
+  });
+  setTimeout(function(){
+    var h = document.getElementById('hint');
+    if(h){ h.style.transition = 'opacity .6s'; h.style.opacity = '0'; }
+  }, 3200);
+
+  render();
+  deck.focus();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper の設計ルール</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Lato:wght@400;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#F8F6F2; --card:#FFFFFF;
+  --ink:#26333F; --ink-2:#4E5F60; --ink-3:#8B98A4;
+  --line:#E6E1D9; --fill:#F1ECE4;
+  --accent:#D9822B; --neg:#DC4A4A; --pos:#12776A;
+  --surround:#16130F;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0; background:var(--surround); color:var(--ink);
+  font-family:"Lato","Noto Sans JP",sans-serif;
+  display:flex; align-items:center; justify-content:center;
+  min-height:100vh; overflow:hidden;
+}
+h1,h2,h3,b,strong{
+  font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-serif;
+}
+
+/* ---- 2. 骨格（rules.html 準拠） ---- */
+.deck{
+  position:relative;
+  width:min(100vw, 177.78vh);
+  height:min(56.25vw, 100vh);
+  container-type:size;
+  overflow:hidden;
+  border-radius:2px;
+  background:
+    radial-gradient(80cqw 62cqw at 88% 4%, rgba(206,124,124,.055), transparent 62%),
+    radial-gradient(72cqw 52cqw at 4% 98%, rgba(217,130,43,.05), transparent 62%),
+    var(--paper);
+  outline:none;
+}
+.slide{
+  position:absolute; inset:0;
+  display:none;
+  flex-direction:column;
+  padding:5.6cqw 6.2cqw 12.4cqw;
+}
+.slide.is-active{ display:flex; }
+
+.slide h2{
+  font-size:3.55cqw; font-weight:700; line-height:1.3; margin:0 0 3.2cqw;
+  border-left:.35cqw solid var(--accent); padding-left:1.1cqw;
+}
+.kicker{
+  font:700 .95cqw/1 "Lato",sans-serif; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 1cqw;
+}
+.body{ flex:1; display:flex; flex-direction:column; justify-content:center; min-height:0; }
+.takeaway{
+  font-size:1.85cqw; font-weight:400; text-align:center; color:var(--ink);
+  margin:2.6cqw 0 0;
+}
+.takeaway b{ font-weight:700; color:var(--accent); }
+.cite{
+  position:absolute; left:6.2cqw; bottom:3.4cqw;
+  font-size:1.05cqw; color:var(--ink-3);
+}
+.deckfoot{
+  position:absolute; right:6.2cqw; bottom:3.4cqw;
+  font:400 1.05cqw/1 "Lato",sans-serif; color:var(--ink-3);
+  font-variant-numeric:tabular-nums;
+}
+
+/* ---- reveal：0.14秒送りだけ ---- */
+.reveal{ opacity:0; transform:translateY(.6cqw); animation:revealIn .6s cubic-bezier(.2,.7,.3,1) forwards; animation-delay:calc(var(--i,0) * .14s); }
+@keyframes revealIn{ to{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion:reduce){ .reveal{ animation:none; opacity:1; transform:none; } }
+
+/* ---- 表紙 .s-title ---- */
+.s-title .body{ justify-content:flex-end; align-items:flex-start; }
+.s-title h1{
+  font-size:5.1cqw; font-weight:900; line-height:1.25; margin:0 0 1.4cqw;
+  border-left:.4cqw solid var(--accent); padding-left:1.2cqw;
+}
+.s-title .sub{ font-size:1.7cqw; color:var(--ink-2); margin:0 0 3.2cqw; max-width:70%; }
+.metaback{
+  border-left:.22cqw solid var(--line); padding:1cqw 0 1cqw 1.4cqw;
+  font-size:1.15cqw; color:var(--ink-3); max-width:60%;
+}
+.metaback b{ color:var(--ink-2); font-weight:700; }
+
+/* ---- .quote ---- */
+.quote{ background:var(--card); border-radius:.6cqw; box-shadow:0 .3cqw 1.4cqw rgba(38,51,63,.08); padding:4cqw 6cqw; text-align:center; margin:0 auto; max-width:78%; }
+.quote .q{ font-size:3.5cqw; font-weight:700; line-height:1.5; margin:0; }
+.quote .q b{ color:var(--accent); }
+
+/* ---- 骨格図（figure） ---- */
+.figwrap{ display:flex; justify-content:center; }
+svg.fig{ overflow:visible; }
+.fig text{ font-family:"Lato","Noto Sans JP",sans-serif; fill:var(--ink-2); }
+.fig .lbl{ font-weight:700; fill:var(--ink); }
+
+/* ---- 色チップ ---- */
+.swatchgrid{ display:grid; grid-template-columns:repeat(5,1fr); gap:1.4cqw; }
+.chip{ background:var(--card); border-radius:.6cqw; overflow:hidden; box-shadow:0 .2cqw 1cqw rgba(38,51,63,.07); }
+.chip .fill{ height:5.4cqw; }
+.chip .meta{ padding:1cqw 1.1cqw 1.2cqw; }
+.chip .name{ font:700 1.05cqw "Lato",monospace; margin:0; }
+.chip .hex{ font:400 .82cqw "Lato",monospace; color:var(--ink-3); margin:.2cqw 0 0; }
+.chip .tag{ display:inline-block; margin-top:.5cqw; font:700 .72cqw "Lato",sans-serif; letter-spacing:.05em; text-transform:uppercase; }
+.chip .tag.neg{ color:var(--neg); } .chip .tag.pos{ color:var(--pos); }
+
+/* ---- 文字specimen ---- */
+.typespec{ display:flex; gap:3cqw; align-items:flex-end; }
+.typespec .item{ flex:1; background:var(--card); border-radius:.6cqw; padding:2.2cqw 2.4cqw; box-shadow:0 .2cqw 1cqw rgba(38,51,63,.06); }
+.typespec .big{ font-size:3.6cqw; font-weight:700; margin:0 0 .8cqw; line-height:1.2; }
+.typespec .role{ font-size:1cqw; color:var(--ink-3); }
+.typespec .role b{ color:var(--ink-2); }
+
+/* ---- 影あり／影なし ---- */
+.shadowbar{ display:flex; gap:1.6cqw; }
+.shadowbar > div{ flex:1; border-radius:.7cqw; padding:2.2cqw 2.2cqw; }
+.shadowbar .yes{ background:var(--card); box-shadow:0 .35cqw 1.6cqw rgba(38,51,63,.15); }
+.shadowbar .no{ background:var(--fill); border-radius:1.4cqw; }
+.shadowbar .lbl{ font-size:1.3cqw; font-weight:700; margin:0 0 .6cqw; }
+.shadowbar p.d{ font-size:1.15cqw; color:var(--ink-2); margin:0; line-height:1.6; }
+
+/* ---- .pcard グリッド ---- */
+.pcard-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.3cqw; }
+.pcard{ background:var(--card); border-left:.28cqw solid var(--accent); border-radius:.35cqw; padding:1.4cqw 1.6cqw; box-shadow:0 .2cqw 1cqw rgba(38,51,63,.06); }
+.pcard .t{ font-size:1.5cqw; font-weight:700; color:var(--accent); margin:0 0 .5cqw; }
+.pcard .d{ font-size:1.15cqw; font-weight:400; color:var(--ink-2); margin:0; line-height:1.55; }
+
+/* ---- 図の描き方 legend ---- */
+.glegend{ display:flex; gap:2.2cqw; justify-content:center; flex-wrap:wrap; }
+.glegend .item{ display:flex; flex-direction:column; align-items:center; gap:.7cqw; }
+.glegend .name{ font:700 1cqw "Lato",monospace; color:var(--ink-2); }
+
+/* ---- do / dont ---- */
+.dodont{ display:grid; grid-template-columns:1fr 1fr; gap:1.8cqw; }
+.dodont .col{ background:var(--card); border-radius:.6cqw; padding:1.8cqw 2cqw; box-shadow:0 .2cqw 1cqw rgba(38,51,63,.06); }
+.dodont h3{ font:700 1cqw "Lato",sans-serif; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3); margin:0 0 1.1cqw; }
+.dodont ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.85cqw; }
+.dodont li{ font-size:1.2cqw; color:var(--ink-2); padding-left:1.7cqw; position:relative; line-height:1.5; }
+.dodont .do li::before{ content:"○"; position:absolute; left:0; color:var(--accent); font-weight:700; }
+.dodont .dont li::before{ content:"×"; position:absolute; left:0; color:var(--ink-3); font-weight:700; }
+
+/* ---- コード ---- */
+.codecard{ background:var(--fill); border-radius:.6cqw; padding:1.8cqw 2.2cqw; margin:0 auto; max-width:82%; }
+.codecard pre{ margin:0; font-family:"SFMono-Regular",Menlo,Consolas,monospace; font-size:1.05cqw; line-height:1.75; color:var(--ink-2); white-space:pre-wrap; }
+.codecard .k{ color:var(--accent); }
+.codecard .c{ color:var(--ink-3); font-style:italic; }
+
+/* ---- ファイル3枚 ---- */
+.filecards{ display:flex; gap:1.6cqw; }
+.filecards .fc{ flex:1; background:var(--card); border-radius:.6cqw; padding:1.8cqw 1.9cqw; box-shadow:0 .2cqw 1cqw rgba(38,51,63,.06); }
+.filecards code{ display:inline-block; background:var(--fill); border-radius:.3cqw; padding:.35cqw .8cqw; font:700 1.05cqw "Lato",monospace; margin-bottom:.9cqw; }
+.filecards p{ font-size:1.15cqw; color:var(--ink-2); margin:0; line-height:1.6; }
+
+/* ---- クロージング ---- */
+.s-close .body{ justify-content:center; align-items:center; text-align:center; }
+.s-close .l3{ font-size:4cqw; font-weight:900; color:var(--accent); line-height:1.4; max-width:82%; margin:0; }
+
+/* ---- ナビ ---- */
+.navhit{ position:absolute; top:0; bottom:12.4cqw; width:16%; cursor:pointer; }
+.navhit.prev{ left:0; } .navhit.next{ right:0; }
+.arrow{
+  position:absolute; bottom:3cqw; width:2.6cqw; height:2.6cqw; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--card); color:var(--ink-3); box-shadow:0 .2cqw 1cqw rgba(38,51,63,.12);
+  font-size:1.2cqw; opacity:.55; transition:opacity .15s;
+  border:none; cursor:pointer;
+}
+.arrow:hover{ opacity:1; color:var(--accent); }
+.arrow[disabled]{ opacity:.18; cursor:default; }
+.arrow.prev{ left:6.2cqw; } .arrow.next{ left:9.4cqw; }
+.hint{
+  position:absolute; top:3.4cqw; right:6.2cqw; font:400 1.05cqw "Lato",sans-serif; color:var(--ink-3); opacity:.7;
+}
+
+@media (max-width:640px){
+  .pcard-grid{ grid-template-columns:repeat(2,1fr); }
+  .swatchgrid{ grid-template-columns:repeat(3,1fr); }
+  .dodont{ grid-template-columns:1fr; }
+  .filecards{ flex-direction:column; }
+}
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck" tabindex="0">
+
+  <!-- 1. 表紙 -->
+  <section class="slide s-title is-active">
+    <p class="kicker reveal" style="--i:0">LT Slide Design</p>
+    <div class="body">
+      <h1 class="reveal" style="--i:1">Paper の<br>設計ルール</h1>
+      <p class="sub reveal" style="--i:2">プロジェクタ前提の温白地スライド。カードと文字で組み、必要なところにだけ図を置く。</p>
+      <div class="metaback reveal" style="--i:3">
+        <b>Scrum Fest Osaka 2026</b>「どちらも『ユーザーのため』だった」(Aki Tanaka / mamedai) のデザインを参照<br>
+        この12枚は、このルール自身をこのルールで説明したもの
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 何のための型か -->
+  <section class="slide">
+    <h2 class="reveal" style="--i:0">1枚の型</h2>
+    <div class="body">
+      <div class="quote reveal" style="--i:1">
+        <p class="q">その1枚は、見出しと<b>1つの部品</b>と<br>一文で言い切れるか。</p>
+      </div>
+    </div>
+    <p class="takeaway reveal" style="--i:2">言い切れないなら、足すのではなく<b>2枚に割る</b>。</p>
+    <p class="cite">01 — 何のための型か</p>
+  </section>
+
+  <!-- 3. 骨格 -->
+  <section class="slide">
+    <h2 class="reveal" style="--i:0">骨格</h2>
+    <div class="body">
+      <div class="figwrap reveal" style="--i:1">
+        <svg class="fig" width="640" height="290" viewBox="0 0 640 290">
+          <rect x="4" y="4" width="632" height="282" rx="6" fill="none" stroke="#8B98A4" stroke-width="2" stroke-dasharray="3 5"/>
+          <text x="18" y="26" class="lbl" font-size="15">.deck（16:9 / cqw基準）</text>
+          <rect x="28" y="42" width="584" height="222" rx="4" fill="#FFFFFF" stroke="#26333F" stroke-width="2"/>
+          <text x="44" y="66" class="lbl" font-size="14">.slide（position: absolute; inset: 0）</text>
+          <line x1="44" y1="80" x2="596" y2="80" stroke="#E6E1D9" stroke-width="2"/>
+          <rect x="44" y="94" width="120" height="26" rx="3" fill="#D9822B"/>
+          <text x="56" y="112" fill="#FFFFFF" font-size="13" font-weight="700">h2 見出し</text>
+          <rect x="44" y="132" width="552" height="70" rx="4" fill="#F1ECE4"/>
+          <text x="60" y="172" font-size="14">.body（flex:1 / 中央寄せ）</text>
+          <line x1="44" y1="216" x2="596" y2="216" stroke="#E6E1D9" stroke-width="2"/>
+          <text x="320" y="238" text-anchor="middle" font-size="13">.takeaway（下部中央の一文）</text>
+        </svg>
+      </div>
+    </div>
+    <p class="takeaway reveal" style="--i:2"><b>cqw / cqh</b>だけで組む。remとpxは混ぜない。</p>
+    <p class="cite">02 — 骨格</p>
+  </section>
+
+  <!-- 4. 色 -->
+  <section class="slide">
+    <h2 class="reveal" style="--i:0">色</h2>
+    <div class="body">
+      <div class="swatchgrid reveal" style="--i:1">
+        <div class="chip"><div class="fill" style="background:#F8F6F2"></div><div class="meta"><p class="name">paper</p><p class="hex">#F8F6F2</p></div></div>
+        <div class="chip"><div class="fill" style="background:#FFFFFF;border-bottom:1px solid #E6E1D9"></div><div class="meta"><p class="name">card</p><p class="hex">#FFFFFF</p></div></div>
+        <div class="chip"><div class="fill" style="background:#26333F"></div><div class="meta"><p class="name">ink</p><p class="hex">#26333F</p></div></div>
+        <div class="chip"><div class="fill" style="background:#D9822B"></div><div class="meta"><p class="name">accent</p><p class="hex">#D9822B</p></div></div>
+        <div class="chip"><div class="fill" style="background:#F1ECE4"></div><div class="meta"><p class="name">fill</p><p class="hex">#F1ECE4</p></div></div>
+        <div class="chip"><div class="fill" style="background:#4E5F60"></div><div class="meta"><p class="name">ink-2</p><p class="hex">#4E5F60</p></div></div>
+        <div class="chip"><div class="fill" style="background:#8B98A4"></div><div class="meta"><p class="name">ink-3</p><p class="hex">#8B98A4</p></div></div>
+        <div class="chip"><div class="fill" style="background:#E6E1D9"></div><div class="meta"><p class="name">line</p><p class="hex">#E6E1D9</p></div></div>
+        <div class="chip"><div class="fill" style="background:#DC4A4A"></div><div class="meta"><p class="name">neg</p><p class="hex">#DC4A4A</p><span class="tag neg">Beforeのみ</span></div></div>
+        <div class="chip"><div class="fill" style="background:#12776A"></div><div class="meta"><p class="name">pos</p><p class="hex">#12776A</p><span class="tag pos">Afterのみ</span></div></div>
+      </div>
+    </div>
+    <p class="takeaway reveal" style="--i:2">オレンジは<b>1枚に1役だけ</b>。ダークモードには対応しない。</p>
+    <p class="cite">03 — 色</p>
+  </section>
+
+  <!-- 5. 文字 -->
+  <section class="slide">
+    <h2 class="reveal" style="--i:0">文字</h2>
+    <div class="body">
+      <div class="typespec reveal" style="--i:1">
+        <div class="item">
+          <p class="big" style="font-family:'Zen Kaku Gothic New'">見出しはZen Kaku</p>
+          <p class="role">和文見出し <b>Zen Kaku Gothic New / 700</b></p>
+        </div>
+        <div class="item">
+          <p class="big" style="font-family:'Lato'">Body is Lato 400</p>
+          <p class="role">欧文・数字 <b>Lato</b>、和文本文は <b>Noto Sans JP</b> に自動フォールバック</p>
+        </div>
+      </div>
+    </div>
+    <p class="takeaway reveal" style="--i:2">2書体だけ。<code style="font-family:monospace">"Lato","Noto Sans JP"</code>の順で書くと欧文だけLatoになる。</p>
+    <p class="cite">04 — 文字</p>
+  </section>
+
+  <!-- 6. 影のつくり方 -->
+  <section class="slide">
+    <h2 class="reveal" style="--i:0">影のつくり方</h2>
+    <div class="body">
+      <div class="shadowbar reveal" style="--i:1">
+        <div class="yes"><p class="lbl">影つき</p><p class="d">.pcard / .quote / .filled<br>地の中で選択肢を示すとき</p></div>
+        <div class="no"><p class="lbl">影なし（角丸のみ）</p><p class="d">.step / .stat / .chip<br>単位・見出し・数字</p></div>
+      </div>
+    </div>
+    <p class="takeaway reveal" style="--i:2">影は<b>1種類だけ</b>。台紙の中で役割を変えない。</p>
+    <p class="cite">05 — 影のつくり方</p>
+  </section>
+
+  <!-- 7. コンポーネント -->
+  <section class="slide">
+    <h2 class="reveal" style="--i:0">コンポーネント</h2>
+    <div class="body">
+      <div class="pcard-grid reveal" style="--i:1">
+        <div class="pcard"><p class="t">要約カード</p><p class="d">.pcard／選択肢の並列</p></div>
+        <div class="pcard"><p class="t">手順</p><p class="d">.steps／時系列・因果</p></div>
+        <div class="pcard"><p class="t">対比</p><p class="d">.bar／Before・After</p></div>
+        <div class="pcard"><p class="t">引用</p><p class="d">.quote／静かなまとめ</p></div>
+        <div class="pcard"><p class="t">数字</p><p class="d">.stats／単位はオレンジ</p></div>
+        <div class="pcard"><p class="t">図</p><p class="d">.figure／SVGで手描き感</p></div>
+      </div>
+    </div>
+    <p class="takeaway reveal" style="--i:2">各ページは、<b>そのページが説明する部品そのもの</b>で組む。</p>
+    <p class="cite">06 — コンポーネント</p>
+  </section>
+
+  <!-- 8. 図の描き方 -->
+  <section class="slide">
+    <h2 class="reveal" style="--i:0">図の描き方</h2>
+    <div class="body">
+      <div class="glegend reveal" style="--i:1">
+        <div class="item"><svg width="56" height="56"><rect x="4" y="4" width="48" height="48" rx="6" fill="none" stroke="#26333F" stroke-width="3"/></svg><span class="name">.g-ink</span></div>
+        <div class="item"><svg width="56" height="56"><rect x="4" y="4" width="48" height="48" rx="6" fill="#26333F" fill-opacity=".1"/></svg><span class="name">.g-fill</span></div>
+        <div class="item"><svg width="56" height="56"><rect x="4" y="4" width="48" height="48" rx="6" fill="#D9822B"/></svg><span class="name">.g-accent</span></div>
+        <div class="item"><svg width="56" height="56"><rect x="4" y="4" width="48" height="48" rx="6" fill="none" stroke="#12776A" stroke-width="3"/></svg><span class="name">.g-pos</span></div>
+        <div class="item"><svg width="56" height="56"><rect x="4" y="4" width="48" height="48" rx="6" fill="none" stroke="#DC4A4A" stroke-width="3" stroke-dasharray="6 4"/></svg><span class="name">.g-neg</span></div>
+      </div>
+    </div>
+    <p class="takeaway reveal" style="--i:2">色は<b>4つ</b>、線は<b>2種</b>、破線は<b>1種</b>まで。</p>
+    <p class="cite">07 — 図の描き方</p>
+  </section>
+
+  <!-- 9. ルール -->
+  <section class="slide">
+    <h2 class="reveal" style="--i:0">ルール</h2>
+    <div class="body">
+      <div class="dodont reveal" style="--i:1">
+        <div class="col do">
+          <h3>やる</h3>
+          <ul>
+            <li>枠は16:9のみ</li>
+            <li>1枚には見出し＋部品1つ＋一文まで</li>
+            <li>言い切れない情報は次の1枚に送る</li>
+          </ul>
+        </div>
+        <div class="col dont">
+          <h3>やらない</h3>
+          <ul>
+            <li>オレンジを1枚に2箇所以上</li>
+            <li>赤・緑をBefore/After以外で使う</li>
+            <li>カードを5枚以上に増やす</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <p class="takeaway reveal" style="--i:2">崩れないことを、<b>増やすこと</b>より優先する。</p>
+    <p class="cite">08 — ルール</p>
+  </section>
+
+  <!-- 10. 1枚ぶんの雛形 -->
+  <section class="slide">
+    <h2 class="reveal" style="--i:0">1枚の雛形</h2>
+    <div class="body">
+      <div class="codecard reveal" style="--i:1">
+<pre>&lt;section class="slide"&gt;
+  &lt;h2&gt;見出し&lt;/h2&gt;
+  &lt;div class="body"&gt;<span class="c"> ← 部品ひとつ</span>&lt;/div&gt;
+  &lt;p class="takeaway reveal" style="--i:1"&gt;一文&lt;/p&gt;
+  &lt;p class="cite"&gt;出典&lt;/p&gt;
+&lt;/section&gt;</pre>
+      </div>
+    </div>
+    <p class="takeaway reveal" style="--i:2">登場は<b>reveal</b>と<b>--i</b>の0.14秒送りだけ。動きは増やさない。</p>
+    <p class="cite">09 — 1枚ぶんの雛形</p>
+  </section>
+
+  <!-- 11. ファイル -->
+  <section class="slide">
+    <h2 class="reveal" style="--i:0">ファイル</h2>
+    <div class="body">
+      <div class="filecards reveal" style="--i:1">
+        <div class="fc"><code>CLAUDE.md</code><p>意図と制約の正本</p></div>
+        <div class="fc"><code>rules.html</code><p>見本と地図、スタイルシート</p></div>
+        <div class="fc"><code>index.html</code><p>人が読むための版</p></div>
+      </div>
+    </div>
+    <p class="takeaway reveal" style="--i:2">正本・見本・可読版を<b>分けて置く</b>。</p>
+    <p class="cite">10 — ファイル</p>
+  </section>
+
+  <!-- 12. クロージング -->
+  <section class="slide s-close">
+    <div class="body">
+      <p class="l3 reveal" style="--i:0">型を守れば、<br>枚数が増えても崩れない。</p>
+    </div>
+    <p class="cite reveal" style="--i:1">出典：Scrum Fest Osaka 2026「どちらも『ユーザーのため』だった」／design-rule の写真13枚と sample.pdf から再構成</p>
+  </section>
+
+  <button class="arrow prev" id="prev" aria-label="前のスライド">‹</button>
+  <button class="arrow next" id="next" aria-label="次のスライド">›</button>
+  <div class="navhit prev" id="hitPrev"></div>
+  <div class="navhit next" id="hitNext"></div>
+  <div class="deckfoot"><span id="pos">1</span> / <span id="total">12</span></div>
+  <div class="hint" id="hint">← → で送る</div>
+</div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  var deck = document.getElementById('deck');
+  var pos = document.getElementById('pos');
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  document.getElementById('total').textContent = slides.length;
+
+  function render(){
+    slides.forEach(function(s, idx){ s.classList.toggle('is-active', idx === i); });
+    pos.textContent = i + 1;
+    prevBtn.disabled = i === 0;
+    nextBtn.disabled = i === slides.length - 1;
+  }
+  function go(delta){
+    var n = i + delta;
+    if(n < 0 || n >= slides.length) return;
+    i = n; render();
+  }
+  prevBtn.addEventListener('click', function(){ go(-1); });
+  nextBtn.addEventListener('click', function(){ go(1); });
+  document.getElementById('hitPrev').addEventListener('click', function(){ go(-1); });
+  document.getElementById('hitNext').addEventListener('click', function(){ go(1); });
+  deck.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === ' '){ go(1); e.preventDefault(); }
+    if(e.key === 'ArrowLeft'){ go(-1); e.preventDefault(); }
+  });
+  window.addEventListener('keydown', function(e){
+    if(document.activeElement === document.body){
+      if(e.key === 'ArrowRight'){ go(1); }
+      if(e.key === 'ArrowLeft'){ go(-1); }
+    }
+  });
+  var hintTimer = setTimeout(function(){
+    var h = document.getElementById('hint');
+    if(h){ h.style.transition = 'opacity .6s'; h.style.opacity = '0'; }
+  }, 3200);
+
+  render();
+  deck.focus();
+})();
+</script>
+</body>
+</html>

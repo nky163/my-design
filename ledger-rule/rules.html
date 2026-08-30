@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledger の設計ルール</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Lato:wght@400;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#F8F6F2; --card:#FFFFFF;
+  --ink:#26333F; --ink-2:#4E5F60; --ink-3:#8B98A4;
+  --line:#E6E1D9; --fill:#F1ECE4;
+  --accent:#D9822B; --neg:#DC4A4A; --pos:#12776A;
+  --shadow:rgba(38,51,63,.10);
+  --accent-wash:rgba(217,130,43,.08);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Lato","Noto Sans JP",sans-serif; line-height:1.75;
+}
+h1,h2,h3{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-serif; color:var(--ink); }
+b,strong{ font-weight:700; }
+code,pre{ font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace; }
+.num{ font-family:"Lato",sans-serif; font-variant-numeric:tabular-nums; }
+
+.wrap{ max-width:1200px; margin:0 auto; padding:0 clamp(20px,4vw,56px) 100px; }
+
+.mast{
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(700px 460px at 96% -10%, var(--accent-wash), transparent 60%),
+    var(--paper);
+  border-bottom:1px solid var(--line);
+  padding:56px clamp(20px,4vw,56px) 44px;
+}
+.eyebrow{ font:700 12px/1 "Lato",sans-serif; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); margin:0 0 14px; }
+.mast h1{ font-size:clamp(30px,4.2vw,44px); font-weight:900; margin:0 0 12px; border-left:5px solid var(--accent); padding-left:18px; }
+.mast p.lead{ max-width:64ch; color:var(--ink-2); font-size:16px; margin:0 0 22px; }
+.source{ border-left:3px solid var(--line); padding:10px 0 10px 16px; color:var(--ink-3); font-size:13px; max-width:74ch; }
+.source code{ color:var(--ink-2); }
+
+.layout{ display:grid; grid-template-columns:200px minmax(0,1fr); gap:56px; margin-top:44px; }
+nav.toc{ position:sticky; top:24px; align-self:start; }
+nav.toc ol{ list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li{ counter-increment:toc; margin-bottom:2px; }
+nav.toc a{ display:flex; gap:8px; padding:7px 0; font-size:13.5px; color:var(--ink-2); text-decoration:none; }
+nav.toc a:hover{ color:var(--accent); }
+nav.toc a::before{ content:counter(toc); color:var(--ink-3); font:700 11px/1.4 "Lato",sans-serif; min-width:1.4em; }
+
+main{ min-width:0; }
+section.rule{ padding-top:68px; scroll-margin-top:20px; }
+section.rule:first-child{ padding-top:0; }
+section.rule + section.rule{ border-top:1px solid var(--line); }
+
+h2.head{ font-size:22px; font-weight:900; margin:0 0 6px; border-left:4px solid var(--accent); padding-left:14px; display:flex; align-items:baseline; gap:10px; }
+h2.head .n{ font:700 13px/1 "Lato",sans-serif; color:var(--ink-3); }
+.dek{ color:var(--ink-2); max-width:70ch; margin:0 0 24px; font-size:15px; }
+
+.callout{ background:var(--card); border-left:3px solid var(--accent); border-radius:2px; padding:18px 22px; margin:20px 0; box-shadow:0 1px 2px var(--shadow); font-weight:700; max-width:70ch; }
+
+pre{ background:var(--fill); border:1px solid var(--line); border-radius:8px; padding:16px 18px; overflow-x:auto; font-size:12.5px; line-height:1.65; color:var(--ink-2); margin:18px 0; }
+pre .k{ color:var(--accent); } pre .c{ color:var(--ink-3); font-style:italic; }
+
+.tbl-wrap{ overflow-x:auto; margin:18px 0; }
+table{ border-collapse:collapse; width:100%; min-width:600px; font-size:13.5px; }
+th{ text-align:left; font:700 11px/1.4 "Lato",sans-serif; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3); border-bottom:1px solid var(--line); padding:8px 14px 10px 0; }
+td{ padding:11px 14px 11px 0; border-bottom:1px solid var(--line); vertical-align:top; color:var(--ink-2); }
+td:first-child, th:first-child{ color:var(--ink); font-weight:700; white-space:nowrap; }
+tr:last-child td{ border-bottom:none; }
+
+.swatches{ display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:14px; margin:20px 0 8px; }
+.swatch{ background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden; box-shadow:0 1px 2px var(--shadow); }
+.swatch .chip{ height:60px; }
+.swatch .meta{ padding:12px 14px 14px; }
+.swatch .name{ font:700 13px "Lato",monospace; margin:0 0 2px; }
+.swatch .hex{ font:400 11px "Lato",monospace; color:var(--ink-3); margin:0 0 8px; }
+.swatch .note{ font-size:11.5px; color:var(--ink-2); margin:0; }
+
+.dodont{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:20px 0; }
+.dodont .col{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 20px; }
+.dodont h3{ font-size:12px; letter-spacing:.08em; text-transform:uppercase; margin:0 0 10px; }
+.dodont .do h3{ color:var(--accent); } .dodont .dont h3{ color:var(--ink-3); }
+.dodont ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px; }
+.dodont li{ font-size:13.5px; color:var(--ink-2); padding-left:22px; position:relative; }
+.dodont .do li::before{ content:"○"; position:absolute; left:0; color:var(--accent); font-weight:700; }
+.dodont .dont li::before{ content:"×"; position:absolute; left:0; color:var(--ink-3); font-weight:700; }
+@media (max-width:640px){ .dodont{ grid-template-columns:1fr; } }
+
+.gal{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin:18px 0; }
+.spec{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 18px; box-shadow:0 1px 2px var(--shadow); }
+.spec .tag{ font:700 11px "Lato",monospace; color:var(--accent); margin:0 0 10px; }
+.spec p.d{ font-size:12.5px; color:var(--ink-2); margin:8px 0 0; }
+
+/* mini demos */
+.kpi-mini{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.kpi-mini .item{ background:var(--fill); border-radius:6px; padding:9px 11px; }
+.kpi-mini .lbl{ font-size:9.5px; color:var(--ink-2); margin:0 0 3px; }
+.kpi-mini .big{ font:800 20px "Lato",sans-serif; margin:0; color:var(--ink); }
+.kpi-mini .delta{ font:700 10px "Lato",sans-serif; color:var(--ink-2); }
+
+.tbl-mini{ font-size:10px; width:100%; border-collapse:collapse; }
+.tbl-mini th{ background:var(--fill); color:var(--ink); padding:5px 7px; font-size:9px; text-transform:none; letter-spacing:0; border-bottom:2px solid var(--line); }
+.tbl-mini td{ padding:5px 7px; border-bottom:1px solid var(--line); color:var(--ink); }
+.tbl-mini td.hi{ color:var(--accent); font-weight:700; }
+
+.stack-mini{ display:flex; gap:8px; align-items:flex-end; height:70px; }
+.stack-mini .bar{ width:26px; display:flex; flex-direction:column-reverse; border-radius:3px 3px 0 0; overflow:hidden; }
+.stack-mini .seg1{ background:var(--ink); height:34px; }
+.stack-mini .seg2{ background:var(--line); height:12px; }
+.stack-mini .seg3{ background:var(--fill); height:10px; }
+.stack-mini .bar2 .seg1{ height:20px;} .stack-mini .bar2 .seg2{height:16px;} .stack-mini .bar2 .seg3{height:24px;}
+
+.combo-mini{ display:flex; align-items:flex-end; gap:6px; height:70px; position:relative; }
+.combo-mini .b{ width:14px; background:var(--ink); border-radius:2px 2px 0 0; }
+.combo-mini .dot{ position:absolute; width:6px; height:6px; border-radius:50%; background:var(--accent); }
+
+.cards-mini{ display:flex; gap:8px; }
+.cards-mini .c{ flex:1; background:var(--fill); border-radius:6px; padding:8px; text-align:center; }
+.cards-mini .n{ font:800 13px "Lato",sans-serif; color:var(--ink); }
+.cards-mini .t{ font-size:9px; color:var(--ink-2); margin-top:2px; }
+
+.files{ display:flex; flex-direction:column; gap:10px; margin:18px 0; }
+.file{ display:flex; gap:14px; align-items:baseline; }
+.file code{ background:var(--fill); border-radius:4px; padding:3px 8px; font-size:12.5px; font-weight:700; white-space:nowrap; }
+.file span{ color:var(--ink-2); font-size:13.5px; }
+
+footer.note{ margin-top:70px; padding-top:22px; border-top:1px solid var(--line); color:var(--ink-3); font-size:12px; max-width:74ch; }
+
+@media (max-width:860px){
+  .layout{ grid-template-columns:1fr; }
+  nav.toc{ position:sticky; top:0; z-index:5; background:var(--paper); padding:10px 0; border-bottom:1px solid var(--line); overflow-x:auto; }
+  nav.toc ol{ display:flex; gap:4px; white-space:nowrap; }
+  nav.toc a::before{ display:none; }
+  nav.toc a{ padding:6px 10px; background:var(--card); border-radius:20px; border:1px solid var(--line); }
+}
+</style>
+</head>
+<body>
+
+<div class="mast">
+  <div class="wrap" style="padding:0;">
+    <p class="eyebrow">Dense Report Slide — Design System</p>
+    <h1>Ledger の設計ルール</h1>
+    <p class="lead">決算・進捗報告のような、1枚あたりの情報密度が高いスライド向けの16:9設計ルール。指標を並べ、結論を先出しする「BLUF型」。色・書体のトークンは <code>../design-rule/rules.html</code>（Paper）と共通にし、密度が高い場面向けの使い方だけを足す。</p>
+    <p class="source">参照：東証グロース上場企業が開示した決算説明資料（2026年8月開示、47ページ）の構成パターンを分析して型を抽出。色・書体は個社のブランドではなく Paper の設計ルールに統一している。見本：<code>sample.html</code>（架空データで組んだ12枚）。</p>
+  </div>
+</div>
+
+<div class="wrap">
+<div class="layout">
+
+<nav class="toc">
+  <ol>
+    <li><a href="#s1">何のための型か</a></li>
+    <li><a href="#s2">骨格</a></li>
+    <li><a href="#s3">色</a></li>
+    <li><a href="#s4">文字</a></li>
+    <li><a href="#s5">数字の見せ方</a></li>
+    <li><a href="#s6">表</a></li>
+    <li><a href="#s7">チャート</a></li>
+    <li><a href="#s8">コンポーネント</a></li>
+    <li><a href="#s9">ルール</a></li>
+    <li><a href="#s10">ファイル</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<section class="rule" id="s1">
+  <h2 class="head"><span class="n">01</span>何のための型か</h2>
+  <p class="dek">この型が扱うのは、<b>1枚で言い切れない量の情報</b>。決算数値、進捗率、リスク一覧など、読み手が同時に比較しながら判断する資料が対象になる。Paperの「1枚1部品」ルールとは前提が逆で、こちらは<b>関連する指標はまとめて並べる</b>ことを許す。</p>
+  <div class="callout">
+    その代わり、結論は必ず<b>ヘッダー直下の一文（BLUF＝Bottom Line Up Front）</b>で先に言い切る。<br>
+    表やグラフは、その一文を裏付ける証拠として後に置く。証拠から結論を推測させない。
+  </div>
+</section>
+
+<section class="rule" id="s2">
+  <h2 class="head"><span class="n">02</span>骨格</h2>
+  <p class="dek">全ページ共通のヘッダー・フッターで「今どこを読んでいるか」を保証する。47ページを超える資料でも迷わないための最低限の装置。</p>
+<pre>.deck{ width:min(100vw,177.78vh); height:min(56.25vw,100vh); container-type:size; overflow:hidden; background:<span class="k">var(--paper)</span>; }
+.slide{ position:absolute; inset:0; padding:4.4cqw 5.2cqw 6cqw; display:flex; flex-direction:column; }
+
+.pagehead{ font-size:2.3cqw; font-weight:700; border-left:.3cqw solid <span class="k">var(--accent)</span>; padding-left:1cqw; }  <span class="c">/* Paperのh2と同じ左オレンジ縦罫 */</span>
+.bluf{ font-size:1.7cqw; font-weight:700; margin:0 0 1.8cqw; }   <span class="c">/* 結論は見出しの直後、本文より先に置く */</span>
+.body{ flex:1; min-height:0; }                                        <span class="c">/* ここに複数コンポーネントを並べてよい */</span>
+
+.chapter-tab{ position:absolute; top:4.4cqw; right:1.2cqw; writing-mode:vertical-rl; font-size:.85cqw; color:<span class="k">var(--ink-3)</span>; }
+.deckfoot{ position:absolute; right:5.2cqw; bottom:2.2cqw; font-size:.85cqw; color:<span class="k">var(--ink-3)</span>; }</pre>
+  <p class="dek" style="margin-top:0;">右端の縦書き<code>.chapter-tab</code>は現在の章名を常時表示する。ページを飛ばして読む前提の資料だからこそ、章の目印をページ内に埋め込む。</p>
+</section>
+
+<section class="rule" id="s3">
+  <h2 class="head"><span class="n">03</span>色</h2>
+  <p class="dek">トークンは Paper と同じもの（同じ名前・同じ値）を使う。<b>Ledger独自の色は増やさない</b>。違うのはトークンの役割の割り振り方だけ。</p>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#F8F6F2"></div><div class="meta"><p class="name">--paper</p><p class="hex">#F8F6F2</p><p class="note">地。純白にしない</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#FFFFFF;border-bottom:1px solid var(--line)"></div><div class="meta"><p class="name">--card</p><p class="hex">#FFFFFF</p><p class="note">KPIブロック・表・カードの面</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#26333F"></div><div class="meta"><p class="name">--ink</p><p class="hex">#26333F</p><p class="note">見出し・本文・表の数値・チャートの主系列</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#4E5F60"></div><div class="meta"><p class="name">--ink-2</p><p class="hex">#4E5F60</p><p class="note">補足・キャプション・<b>KPIの増減率</b></p></div></div>
+    <div class="swatch"><div class="chip" style="background:#8B98A4"></div><div class="meta"><p class="name">--ink-3</p><p class="hex">#8B98A4</p><p class="note">ラベル・ページ番号・章タブ</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#F1ECE4"></div><div class="meta"><p class="name">--fill</p><p class="hex">#F1ECE4</p><p class="note">表ヘッダーの地・チャートの非主系列の面</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#E6E1D9"></div><div class="meta"><p class="name">--line</p><p class="hex">#E6E1D9</p><p class="note">罫線・カード枠</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#D9822B"></div><div class="meta"><p class="name">--accent</p><p class="hex">#D9822B</p><p class="note">1枚に1役だけ。見せたい1列・1本の線・1つの数字</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#DC4A4A"></div><div class="meta"><p class="name">--neg</p><p class="hex">#DC4A4A</p><p class="note">Before（期首・変更前）側のみ</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#12776A"></div><div class="meta"><p class="name">--pos</p><p class="hex">#12776A</p><p class="note">After（今期・変更後）側のみ</p></div></div>
+  </div>
+
+  <div class="callout">
+    Paperは「1枚に1役」だが、Ledgerは1枚に指標が何個も乗る。だから<b>accentの節約は「1スライドに1役」から「1コンポーネントに1役」に読み替える</b>——表なら見せたい列1つ、チャートなら線1本、KPIグリッドなら「重要指標」タグの付いた1枚だけ。それ以外の数字・棒・見出しはすべて --ink / --ink-2 の無彩色で構造化する。オレンジを増やして目立たせるのではなく、<b>オレンジ以外を減らして目立たせる</b>。
+  </div>
+  <p class="dek">赤・緑（--neg / --pos）は Paper と同じく、時点や状態を明示的に対比するときだけに絞る。<b>KPIの増減が良いか悪いかを色では示さない</b>（詳しくは05章）。</p>
+</section>
+
+<section class="rule" id="s4">
+  <h2 class="head"><span class="n">04</span>文字</h2>
+  <p class="dek">Paperと同じ2書体。和文の見出しは <b style="font-family:'Zen Kaku Gothic New'">Zen Kaku Gothic New</b>、欧文と数字は <b style="font-family:'Lato'">Lato</b>。本文の和文は Noto Sans JP に落ちる。金額や％は縦に並ぶことが多いので <code>font-variant-numeric: tabular-nums</code> で桁を揃える。</p>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>役割</th><th>書体</th><th>サイズ目安</th><th>太さ</th></tr></thead>
+    <tbody>
+      <tr><td>表紙タイトル</td><td>Zen Kaku Gothic New</td><td>3.6cqw</td><td>900</td></tr>
+      <tr><td>ページ見出し（ピル内）</td><td>Zen Kaku Gothic New</td><td>1.5cqw</td><td>700</td></tr>
+      <tr><td>結論（BLUF）</td><td>Zen Kaku Gothic New</td><td>1.7cqw</td><td>700</td></tr>
+      <tr><td>KPI大数字</td><td class="num">Lato</td><td>4.2cqw</td><td>800</td></tr>
+      <tr><td>KPI単位・ラベル</td><td>Noto Sans JP</td><td>1.1cqw</td><td>500</td></tr>
+      <tr><td>YoY・増減率</td><td class="num">Lato</td><td>1.6cqw</td><td>700</td></tr>
+      <tr><td>表本文</td><td class="num">Lato / Noto Sans JP</td><td>1.15cqw</td><td>400 / 700（数値のみ700）</td></tr>
+      <tr><td>脚注・出典</td><td>Noto Sans JP</td><td>.85cqw</td><td>400</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="rule" id="s5">
+  <h2 class="head"><span class="n">05</span>数字の見せ方</h2>
+  <p class="dek">この型でいちばん誤解されやすい部分。<b>色で善し悪しを判断させない</b>。同じページに「伸びている指標」と「投資で一時的に落ちている指標」が同居するのが決算資料の常だから、両方を等しく無彩色で扱い、解釈は文章（BLUF）に語らせる。</p>
+  <div class="dodont">
+    <div class="col do">
+      <h3>やる</h3>
+      <ul>
+        <li>増加は「+」、減少は「▲」の記号だけで示す</li>
+        <li>増減率の色は good/bad にかかわらず <b>--ink-2</b> で統一（accentすら使わない）</li>
+        <li>3桁ごとにカンマ区切り、単位は数字の直後に小さく添える</li>
+        <li>比較の基準（前年・計画比）を数字のすぐ横に明記する</li>
+      </ul>
+    </div>
+    <div class="col dont">
+      <h3>やらない</h3>
+      <ul>
+        <li>減少した数値だけ --neg（赤）にする</li>
+        <li>伸びている数値を --pos（緑）や --accent で強調する</li>
+        <li>▲を使わず「-25%」のように符号を省略する</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="rule" id="s6">
+  <h2 class="head"><span class="n">06</span>表</h2>
+  <p class="dek">見出し行は<b>--fill の地に --ink の太字</b>。白地に色文字より、この温度差だけで十分読める（Paperの「地とカードの2段で差をつける」と同じ考え方）。読ませたい1列（進捗率など）だけ<b>--accent の文字色</b>にして視線を集める。単位は表の右下に1回だけ書く。</p>
+<pre>th{ background:<span class="k">var(--fill)</span>; color:<span class="k">var(--ink)</span>; border-bottom:2px solid var(--line); }
+td.highlight{ color:<span class="k">var(--accent)</span>; font-weight:700; }   <span class="c">/* 読ませたい列だけ */</span>
+td.num{ font-family:"Lato"; font-variant-numeric:tabular-nums; text-align:right; }</pre>
+  <table class="tbl-mini" style="max-width:420px;">
+    <thead><tr><th>指標</th><th>計画</th><th>実績</th><th>進捗率</th></tr></thead>
+    <tbody>
+      <tr><td>売上高</td><td class="num">2,221</td><td class="num">1,385</td><td class="num hi">62.4%</td></tr>
+      <tr><td>営業利益</td><td class="num">134</td><td class="num">45</td><td class="num hi">34.1%</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="rule" id="s7">
+  <h2 class="head"><span class="n">07</span>チャート</h2>
+  <p class="dek">チャートは3種類に絞る。色は<b>棒・面はすべて --ink（無彩色）</b>、<b>accentは線1本か、注目させたい1点だけ</b>に使う。2色以上の系列を塗り分けで見せない。</p>
+  <div class="gal">
+    <div class="spec">
+      <p class="tag">積み上げ比較</p>
+      <div class="stack-mini"><div class="bar"><div class="seg1"></div><div class="seg2"></div><div class="seg3"></div></div><div class="bar bar2"><div class="seg1"></div><div class="seg2"></div><div class="seg3"></div></div></div>
+      <p class="d">2時点の内訳を並べて増減を見せる。区分は3つまで、色は --ink の濃淡（--ink / --line / --fill）だけ。</p>
+    </div>
+    <div class="spec">
+      <p class="tag">棒＋線コンボ</p>
+      <div class="combo-mini">
+        <div class="b" style="height:20px"></div><div class="b" style="height:34px"></div><div class="b" style="height:28px"></div><div class="b" style="height:46px"></div><div class="b" style="height:58px"></div>
+        <div class="dot" style="left:2px;bottom:50px"></div><div class="dot" style="left:22px;bottom:30px"></div><div class="dot" style="left:42px;bottom:20px"></div><div class="dot" style="left:62px;bottom:34px"></div><div class="dot" style="left:82px;bottom:44px"></div>
+      </div>
+      <p class="d">実額の棒は --ink、率の線だけ --accent。色ではなく「棒 vs 線」という形の違いで系列を分ける。</p>
+    </div>
+    <div class="spec">
+      <p class="tag">数式ストリップ</p>
+      <div class="cards-mini"><div class="c"><div class="n">70.4</div><div class="t">利用数</div></div><div class="c" style="flex:0 0 auto;align-self:center;color:var(--ink-3)">×</div><div class="c"><div class="n">45.3</div><div class="t">単価</div></div><div class="c" style="flex:0 0 auto;align-self:center;color:var(--ink-3)">=</div><div class="c"><div class="n">3,191</div><div class="t">GMV</div></div></div>
+      <p class="d">KPIの分解を「×」「＝」でつなぎ、3枚のカードで見せる。指標同士の関係を言葉で説明しない。</p>
+    </div>
+  </div>
+</section>
+
+<section class="rule" id="s8">
+  <h2 class="head"><span class="n">08</span>コンポーネント</h2>
+  <div class="gal">
+    <div class="spec">
+      <p class="tag">.kpi-grid</p>
+      <div class="kpi-mini">
+        <div class="item"><p class="lbl">売上高</p><p class="big">1,385</p><p class="delta">YoY +18.2%</p></div>
+        <div class="item"><p class="lbl">営業利益</p><p class="big">62</p><p class="delta">YoY ▲12.4%</p></div>
+      </div>
+      <p class="d">2〜6個を並べる。Paperの.statsと違い、複数指標の同時比較が目的のときだけ使う。増減の色は常に --ink-2。</p>
+    </div>
+    <div class="spec">
+      <p class="tag">.risk-table</p>
+      <p class="d" style="margin:0 0 8px;">リスク名｜発見可能性｜影響度｜詳細、の4列。深刻度を色でなく「小・中・大」の文字で示す（05章と同じ思想）。</p>
+    </div>
+    <div class="spec">
+      <p class="tag">.step-cards</p>
+      <div class="cards-mini"><div class="c"><div class="n">01</div><div class="t">把握</div></div><div class="c"><div class="n">02</div><div class="t">未然防止</div></div><div class="c"><div class="n">03</div><div class="t">対応強化</div></div></div>
+      <p class="d">施策や手順を3〜4枚の白カードで並べる。番号は意味のある順序のときだけ使う。</p>
+    </div>
+    <div class="spec">
+      <p class="tag">.compare-card</p>
+      <p class="d" style="margin:0;">見出し＋日付タグのヘッダー、その下に「課題／対応／仕組み／効果」の定義リスト。2枚を横並びにして施策を比較する。</p>
+    </div>
+  </div>
+</section>
+
+<section class="rule" id="s9">
+  <h2 class="head"><span class="n">09</span>ルール</h2>
+  <div class="dodont">
+    <div class="col do">
+      <h3>やる</h3>
+      <ul>
+        <li>関連する指標はまとめて並べる（比較が目的なら分割しない）</li>
+        <li>結論の一文はヘッダー直下に先出しする</li>
+        <li>表・チャートの構造色は --ink、accentは1コンポーネントに1役だけ</li>
+        <li>KPIの増減率はすべて --ink-2 に統一する</li>
+        <li>装飾はカバーとセクション扉だけに使う</li>
+      </ul>
+    </div>
+    <div class="col dont">
+      <h3>やらない</h3>
+      <ul>
+        <li>ネガティブな数値のためだけに --neg（赤）を使う</li>
+        <li>本文ページに装飾グラフィックを置く</li>
+        <li>1枚のチャートに --ink 以外の色を2つ以上増やす</li>
+        <li>疑似3Dの影や立体表現でデータを飾る</li>
+        <li>単位をタイトルだけに書いて数字から省く</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="rule" id="s10">
+  <h2 class="head"><span class="n">10</span>ファイル</h2>
+  <div class="files">
+    <div class="file"><code>rules.html</code><span>この文書。ルールと根拠</span></div>
+    <div class="file"><code>sample.html</code><span>ルールをルール自身で説明した見本デッキ（12枚）</span></div>
+  </div>
+</section>
+
+<footer class="note">
+  東証グロース上場企業が開示した決算説明資料（2026年8月開示PDF、47ページ）の構成パターンを分析して型を抽出。色・書体のトークンは個社のブランドではなく、<code>design-rule/rules.html</code>（Paper）のものをそのまま採用している。
+</footer>
+
+</main>
+</div>
+</div>
+</body>
+</html>

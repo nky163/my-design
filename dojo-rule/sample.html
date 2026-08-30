@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dojo サンプルデッキ</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Lato:wght@400;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#F8F6F2; --card:#FFFFFF;
+  --ink:#26333F; --ink-2:#4E5F60; --ink-3:#8B98A4;
+  --line:#E6E1D9; --fill:#F1ECE4;
+  --accent:#D9822B; --neg:#DC4A4A; --pos:#12776A;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0; background:#171410; color:var(--ink);
+  font-family:"Lato","Noto Sans JP",sans-serif;
+  display:flex; align-items:center; justify-content:center;
+  min-height:100vh; overflow:hidden;
+}
+h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-serif; }
+b,strong{ font-weight:700; }
+
+.deck{
+  position:relative;
+  width:min(100vw, 177.78vh); height:min(56.25vw, 100vh);
+  container-type:size; overflow:hidden;
+  background:var(--paper);
+  outline:none;
+}
+.slide{ position:absolute; inset:0; display:none; flex-direction:column; padding:4.4cqw 5.2cqw 6cqw; }
+.slide.is-active{ display:flex; }
+
+/* 見出し。Paper / Ledgerと同じ左オレンジ縦罫 */
+.pagehead{ font-size:2.3cqw; font-weight:700; line-height:1.3; margin:0 0 .7cqw; border-left:.3cqw solid var(--accent); padding-left:1cqw; color:var(--ink); }
+.lead{ font-size:1.3cqw; color:var(--ink-2); margin:0 0 1.8cqw; line-height:1.6; max-width:80ch; }
+.lead b{ color:var(--ink); }
+.body{ flex:1; min-height:0; display:flex; flex-direction:column; }
+.caption{ text-align:center; font-size:1.05cqw; color:var(--ink-2); margin-top:1.2cqw; }
+.deckfoot{ position:absolute; right:5.2cqw; bottom:2.3cqw; font:400 .85cqw "Lato",sans-serif; color:var(--ink-3); font-variant-numeric:tabular-nums; }
+.footlogo{ position:absolute; left:5.2cqw; bottom:2.3cqw; font:800 1cqw "Lato",sans-serif; color:var(--ink); display:flex; align-items:center; gap:.5cqw; }
+.footlogo .dot{ width:.4cqw; height:1.1cqw; background:var(--accent); border-radius:1px; }
+
+/* reveal */
+.reveal{ opacity:0; transform:translateY(.6cqw); animation:revealIn .55s cubic-bezier(.2,.7,.3,1) forwards; animation-delay:calc(var(--i,0) * .12s); }
+@keyframes revealIn{ to{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion:reduce){ .reveal{ animation:none; opacity:1; transform:none; } }
+
+/* 表紙／クロージング：大きな図形2つを重ねる構図（元デッキの表紙・締めを継承） */
+.s-cover, .s-close{ background:var(--card); }
+.shape{ position:absolute; }
+.shape.blob{ right:-6cqw; bottom:-10cqw; width:46cqw; height:40cqw; background:var(--accent); border-radius:46% 54% 0 0 / 100% 100% 0 0; }
+.shape.circle{ right:-2cqw; bottom:-4cqw; width:26cqw; height:26cqw; background:var(--ink); border-radius:50%; opacity:.92; }
+.s-cover .body, .s-close .body{ justify-content:center; position:relative; z-index:1; }
+.s-cover .cov-kicker{ font:700 1.3cqw "Lato",sans-serif; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 .9cqw; }
+.s-cover h1{ font-size:3.6cqw; font-weight:900; margin:0 0 1.2cqw; line-height:1.3; border-left:.35cqw solid var(--accent); padding-left:1.2cqw; max-width:60%; }
+.s-cover .cov-sub{ font-size:1.4cqw; color:var(--ink-2); margin:0 0 1.6cqw; max-width:56%; }
+.s-cover .cov-meta{ border-left:.22cqw solid var(--line); padding:.9cqw 0 .9cqw 1.3cqw; font-size:1.05cqw; color:var(--ink-3); max-width:56%; line-height:1.7; }
+.s-close h2{ font-size:3cqw; font-weight:900; color:var(--ink); margin:0; }
+.s-close .cite{ margin-top:1.6cqw; font-size:1cqw; color:var(--ink-3); max-width:56%; line-height:1.7; }
+
+/* 色スウォッチ */
+.swatchgrid{ display:grid; grid-template-columns:repeat(5,1fr); gap:1.2cqw; }
+.swatch{ background:var(--card); border:1px solid var(--line); border-radius:.6cqw; overflow:hidden; box-shadow:0 .15cqw .9cqw rgba(38,51,63,.06); }
+.swatch .fill{ height:4.2cqw; }
+.swatch .meta{ padding:.8cqw .9cqw 1cqw; }
+.swatch .name{ font:700 1cqw "Lato",monospace; margin:0; }
+.swatch .hex{ font:400 .8cqw "Lato",monospace; color:var(--ink-3); margin:.15cqw 0 0; }
+
+/* 文字specimen */
+.typespec{ display:flex; gap:2cqw; align-items:stretch; flex:1; }
+.typespec .item{ flex:1; background:var(--card); border:1px solid var(--line); border-radius:.6cqw; padding:2cqw 2.2cqw; box-shadow:0 .15cqw .9cqw rgba(38,51,63,.05); display:flex; flex-direction:column; justify-content:center; }
+.typespec .big{ font-size:2cqw; font-weight:700; margin:0 0 .6cqw; line-height:1.3; color:var(--ink); }
+.typespec .role{ font-size:.95cqw; color:var(--ink-3); }
+.typespec .role b{ color:var(--ink-2); }
+
+/* スペクトラム図 */
+.spectrum-wrap{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2.4cqw; }
+.spec-row{ display:flex; align-items:center; gap:1cqw; }
+.spec-box{ border:.15cqw solid var(--ink); border-radius:.5cqw; padding:1.2cqw 1.8cqw; font-weight:700; font-size:1.3cqw; color:var(--ink); text-align:center; }
+.spec-gt{ font-weight:900; font-size:2.2cqw; color:var(--ink-3); }
+.spec-band{ width:70%; text-align:center; }
+.spec-band .ends{ display:flex; justify-content:space-between; font-weight:700; font-size:1.15cqw; margin-bottom:.5cqw; color:var(--ink); }
+.spec-band .bar{ height:.7cqw; border-radius:999px; background:linear-gradient(90deg, var(--ink), var(--fill)); }
+
+/* サイクル図 */
+.loopwrap{ flex:1; position:relative; }
+.loop-node{ position:absolute; background:var(--ink); color:#fff; font-weight:700; font-size:1.2cqw; border-radius:.5cqw; padding:.9cqw 1.6cqw; text-align:center; }
+.loop-cap{ position:absolute; font-size:.95cqw; color:var(--ink-2); text-align:center; width:14cqw; }
+.loop-note{ position:absolute; color:var(--accent); font-weight:700; font-size:1.1cqw; text-align:center; width:20cqw; }
+.loopwrap svg{ position:absolute; inset:0; overflow:visible; }
+
+/* アーキテクチャ図 */
+.archwrap{ flex:1; display:flex; flex-direction:column; justify-content:center; gap:.7cqw; }
+.lane{ background:var(--fill); border-radius:.5cqw; padding:.8cqw 1.1cqw; display:flex; flex-direction:column; gap:.5cqw; }
+.lane .lbl{ font-size:.9cqw; font-weight:700; color:var(--ink-3); margin:0 0 .1cqw; }
+.lane .node{ background:var(--card); border:.12cqw solid var(--ink-3); border-radius:.35cqw; padding:.55cqw .9cqw; font-size:1.05cqw; font-weight:700; color:var(--ink); text-align:center; }
+.lane .node.ext{ background:var(--ink); color:#fff; border-color:var(--ink); }
+.arch-arrow{ display:flex; align-items:center; justify-content:center; color:var(--ink-3); font-size:1.3cqw; font-weight:900; line-height:1; }
+
+/* 箇条書き */
+.bullets{ font-size:1.35cqw; color:var(--ink); line-height:1.9; }
+.bullets ul{ margin:0; padding-left:1.3cqw; }
+.bullets ul ul{ margin-top:.3cqw; font-size:.85em; color:var(--ink-2); }
+.bullets > ul > li{ margin-bottom:.9cqw; }
+.bullets li::marker{ color:var(--ink-3); }
+
+/* アイコン行 */
+.iconrow{ flex:1; display:flex; flex-direction:row; align-items:center; justify-content:center; gap:4cqw; }
+.iconrow .ic{ text-align:center; }
+.iconrow .ic svg{ display:block; margin:0 auto .8cqw; }
+.iconrow .ic p{ font-size:1.15cqw; font-weight:700; color:var(--ink); margin:0; }
+
+/* do / dont */
+.dodont{ display:grid; grid-template-columns:1fr 1fr; gap:1.4cqw; flex:1; }
+.dodont .col{ background:var(--card); border:1px solid var(--line); border-radius:.6cqw; padding:1.6cqw 1.8cqw; box-shadow:0 .15cqw .9cqw rgba(38,51,63,.05); }
+.dodont h3{ font:700 1cqw "Lato",sans-serif; letter-spacing:.05em; text-transform:uppercase; margin:0 0 1.1cqw; }
+.dodont .do h3{ color:var(--accent); } .dodont .dont h3{ color:var(--ink-3); }
+.dodont ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.9cqw; }
+.dodont li{ font-size:1.15cqw; color:var(--ink-2); padding-left:1.6cqw; position:relative; line-height:1.5; }
+.dodont .do li::before{ content:"○"; position:absolute; left:0; color:var(--accent); font-weight:700; }
+.dodont .dont li::before{ content:"×"; position:absolute; left:0; color:var(--ink-3); font-weight:700; }
+
+/* ファイル */
+.filecards{ display:flex; gap:1.4cqw; flex:1; align-items:center; }
+.filecards .fc{ flex:1; background:var(--card); border:1px solid var(--line); border-radius:.6cqw; padding:1.8cqw 1.9cqw; box-shadow:0 .15cqw .9cqw rgba(38,51,63,.05); }
+.filecards code{ display:inline-block; background:var(--fill); border-radius:.3cqw; padding:.35cqw .8cqw; font:700 1.1cqw "Lato",monospace; margin-bottom:.9cqw; color:var(--ink); }
+.filecards p{ font-size:1.1cqw; color:var(--ink-2); margin:0; line-height:1.6; }
+
+/* ナビ */
+.navhit{ position:absolute; top:0; bottom:0; width:14%; cursor:pointer; }
+.navhit.prev{ left:0; } .navhit.next{ right:0; }
+.arrow{ position:absolute; top:50%; transform:translateY(-50%); width:2.6cqw; height:2.6cqw; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--card); color:var(--ink-3); box-shadow:0 .2cqw 1cqw rgba(38,51,63,.14); font-size:1.2cqw; opacity:0; transition:opacity .15s; border:none; cursor:pointer; z-index:2; }
+.deck:hover .arrow{ opacity:.6; }
+.arrow:hover{ opacity:1 !important; color:var(--accent); }
+.arrow[disabled]{ opacity:.15 !important; cursor:default; }
+.arrow.prev{ left:1.3cqw; } .arrow.next{ right:1.3cqw; }
+.hint{ position:absolute; top:4.6cqw; right:5.2cqw; font:400 .95cqw "Lato",sans-serif; color:var(--ink-3); opacity:.7; z-index:2; }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck" tabindex="0">
+
+  <!-- 1. 表紙 -->
+  <section class="slide s-cover is-active">
+    <div class="shape blob"></div><div class="shape circle"></div>
+    <div class="body">
+      <p class="cov-kicker reveal" style="--i:0">Self-Study Explainer Slide — Design System</p>
+      <h1 class="reveal" style="--i:1">Dojo の設計ルール</h1>
+      <p class="cov-sub reveal" style="--i:2">話者なしで後から読まれる、社内研修のような技術解説スライド向けの16:9設計。1枚1概念、図と箇条書きで説明を尽くす。</p>
+      <p class="cov-meta reveal" style="--i:3">色・書体・見出しは <b style="color:var(--ink-2)">Paper / Ledger</b> と共通。<br>この13枚は、このルールを、このデザイン自身で説明したもの。</p>
+    </div>
+    <div class="footlogo reveal" style="--i:4"><span class="dot"></span>DOJO</div>
+  </section>
+
+  <!-- 2. 何のための型か -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">何のための型か</h2>
+    <p class="lead reveal" style="--i:1">話者がいない<b>自習用の技術資料</b>が対象。結論を1文に圧縮しなくてよい代わりに、1枚1概念は守る。</p>
+    <div class="bullets body reveal" style="--i:2">
+      <ul>
+        <li>Paperの講演スライド・Ledgerの決算報告と違い、<b>後から自分のペースで読まれる</b>
+          <ul>
+            <li>結論を1行に圧縮する必要がない</li>
+            <li>図や箇条書きで、そのまま説明を尽くしてよい</li>
+          </ul>
+        </li>
+        <li>ただし1枚1概念は変わらない
+          <ul>
+            <li>詰め込みたくなったら2枚に割るサイン</li>
+            <li>箇条書きを増やして誤魔化さない</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="footlogo"><span class="dot"></span>DOJO</div>
+    <div class="deckfoot">2</div>
+  </section>
+
+  <!-- 3. 骨格 -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">骨格</h2>
+    <p class="lead reveal" style="--i:1">見出し・本文・フッターの3段構成。図には必ずキャプションを添える。</p>
+    <div class="body reveal" style="--i:2; align-items:center; justify-content:center;">
+      <svg width="900" height="380" viewBox="0 0 900 380">
+        <rect x="4" y="4" width="892" height="372" rx="8" fill="#fff" stroke="#E6E1D9" stroke-width="2"/>
+        <rect x="36" y="30" width="6" height="30" fill="#D9822B"/>
+        <text x="56" y="52" font-size="17" font-weight="700" fill="#26333F" font-family="sans-serif">ページ見出し（.pagehead）</text>
+        <rect x="40" y="90" width="820" height="190" rx="6" fill="#F1ECE4"/>
+        <text x="450" y="180" font-size="15" fill="#4E5F60" text-anchor="middle" font-family="sans-serif">本文（.body）— 図1つ、または箇条書き1つ</text>
+        <text x="450" y="255" font-size="13" fill="#8B98A4" text-anchor="middle" font-family="sans-serif">caption — 図が何を表しているかを1行で</text>
+        <line x1="40" y1="316" x2="860" y2="316" stroke="#E6E1D9" stroke-width="2"/>
+        <text x="40" y="340" font-size="13" fill="#8B98A4" font-family="sans-serif">ロゴ（左下）</text>
+        <text x="820" y="340" font-size="13" fill="#8B98A4" text-anchor="end" font-family="sans-serif">ページ番号（右下）</text>
+      </svg>
+    </div>
+    <div class="footlogo"><span class="dot"></span>DOJO</div>
+    <div class="deckfoot">3</div>
+  </section>
+
+  <!-- 4. 色 -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">色</h2>
+    <p class="lead reveal" style="--i:1">Paper / Ledgerと<b>同じトークン</b>。図の中の色分けもこれ以上増やさない。</p>
+    <div class="body reveal" style="--i:2; justify-content:center;">
+      <div class="swatchgrid">
+        <div class="swatch"><div class="fill" style="background:#F8F6F2"></div><div class="meta"><p class="name">paper</p><p class="hex">#F8F6F2</p></div></div>
+        <div class="swatch"><div class="fill" style="background:#FFFFFF;border-bottom:1px solid #E6E1D9"></div><div class="meta"><p class="name">card</p><p class="hex">#FFFFFF</p></div></div>
+        <div class="swatch"><div class="fill" style="background:#26333F"></div><div class="meta"><p class="name">ink</p><p class="hex">#26333F</p></div></div>
+        <div class="swatch"><div class="fill" style="background:#D9822B"></div><div class="meta"><p class="name">accent</p><p class="hex">#D9822B</p></div></div>
+        <div class="swatch"><div class="fill" style="background:#F1ECE4"></div><div class="meta"><p class="name">fill</p><p class="hex">#F1ECE4</p></div></div>
+      </div>
+    </div>
+    <p class="lead" style="font-size:1.05cqw;margin-top:1.4cqw;">図のノードは --ink 単色、強調は --accent を1箇所だけ。領域分けは色相でなく --fill の面で示す。</p>
+    <div class="footlogo"><span class="dot"></span>DOJO</div>
+    <div class="deckfoot">4</div>
+  </section>
+
+  <!-- 5. 文字 -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">文字</h2>
+    <p class="lead reveal" style="--i:1">Paper / Ledgerと<b>同じ2書体</b>。自習資料なので本文は長くなってよい。</p>
+    <div class="typespec reveal" style="--i:2">
+      <div class="item">
+        <p class="big" style="font-family:'Zen Kaku Gothic New'">見出しはZen Kaku Gothic New</p>
+        <p class="role">和文見出し <b>700</b>。本文は Noto Sans JP</p>
+      </div>
+      <div class="item">
+        <p class="big" style="font-family:'Lato'">Body copy in Lato</p>
+        <p class="role">欧文・数字は <b>Lato</b>。箇条書きは階層2段まで</p>
+      </div>
+    </div>
+    <div class="footlogo"><span class="dot"></span>DOJO</div>
+    <div class="deckfoot">5</div>
+  </section>
+
+  <!-- 6. スペクトラム図 -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">スペクトラム図</h2>
+    <p class="lead reveal" style="--i:1">強弱・優劣・順序を示す図。ボックスは<b>枠線だけ</b>、区切りは「&gt;」で十分伝わる。</p>
+    <div class="spectrum-wrap body reveal" style="--i:2">
+      <div class="spec-row">
+        <div class="spec-box">案A</div><span class="spec-gt">&gt;</span>
+        <div class="spec-box">案B</div><span class="spec-gt">&gt;</span>
+        <div class="spec-box">案C</div>
+      </div>
+      <div class="spec-band">
+        <div class="ends"><span>信頼性 高い</span><span>信頼性 低い</span></div>
+        <div class="bar"></div>
+      </div>
+    </div>
+    <p class="caption">案の並び順で強弱を示し、帯で軸の意味を1行に集約する</p>
+    <div class="footlogo"><span class="dot"></span>DOJO</div>
+    <div class="deckfoot">6</div>
+  </section>
+
+  <!-- 7. サイクル図 -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">サイクル図</h2>
+    <p class="lead reveal" style="--i:1">循環するプロセスを示す図。ノードは<b>すべて同じ塗り</b>、矢印は湾曲線でつなぐ。</p>
+    <div class="loopwrap body reveal" style="--i:2">
+      <svg viewBox="0 0 900 400" width="100%" height="100%" font-family="sans-serif">
+        <defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#8B98A4"/></marker></defs>
+        <path d="M 495 78 Q 640 92 692 156" fill="none" stroke="#8B98A4" stroke-width="2.5" marker-end="url(#arrow)"/>
+        <path d="M 728 210 Q 650 292 502 302" fill="none" stroke="#8B98A4" stroke-width="2.5" marker-end="url(#arrow)"/>
+        <path d="M 398 302 Q 258 292 172 210" fill="none" stroke="#8B98A4" stroke-width="2.5" marker-end="url(#arrow)"/>
+        <path d="M 168 150 Q 240 62 398 56" fill="none" stroke="#8B98A4" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+        <rect x="380" y="22" width="140" height="56" rx="8" fill="#26333F"/>
+        <text x="450" y="56" font-size="22" font-weight="700" fill="#fff" text-anchor="middle">設計</text>
+
+        <rect x="670" y="152" width="140" height="56" rx="8" fill="#26333F"/>
+        <text x="740" y="186" font-size="22" font-weight="700" fill="#fff" text-anchor="middle">レビュー</text>
+        <text x="740" y="232" font-size="15" fill="#4E5F60" text-anchor="middle">知見のある人が確認</text>
+
+        <rect x="380" y="292" width="140" height="56" rx="8" fill="#26333F"/>
+        <text x="450" y="326" font-size="22" font-weight="700" fill="#fff" text-anchor="middle">実装</text>
+
+        <rect x="90" y="152" width="140" height="56" rx="8" fill="#26333F"/>
+        <text x="160" y="186" font-size="22" font-weight="700" fill="#fff" text-anchor="middle">議論</text>
+        <text x="160" y="232" font-size="15" fill="#4E5F60" text-anchor="middle">意見を取り込む</text>
+
+        <text x="450" y="196" font-size="17" font-weight="700" fill="#D9822B" text-anchor="middle">コードレビューより</text>
+        <text x="450" y="220" font-size="17" font-weight="700" fill="#D9822B" text-anchor="middle">手戻りが少なく済む</text>
+      </svg>
+    </div>
+    <p class="caption">4つのノードは同格。強調したい一言だけ --accent のテキストで添える</p>
+    <div class="footlogo"><span class="dot"></span>DOJO</div>
+    <div class="deckfoot">7</div>
+  </section>
+
+  <!-- 8. アーキテクチャ図 -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">アーキテクチャ図</h2>
+    <p class="lead reveal" style="--i:1">システム構成を示す図。レーンは<b>--fillの面</b>で分け、外部システムだけ塗りつぶす。</p>
+    <div class="archwrap body reveal" style="--i:2">
+      <div class="lane">
+        <p class="lbl">CLIENT</p>
+        <div class="node">アプリ UI</div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="lane">
+        <p class="lbl">BACKEND</p>
+        <div class="node">API</div>
+        <div class="node">審査サービス</div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="lane">
+        <p class="lbl">EXTERNAL</p>
+        <div class="node ext">外部システム</div>
+      </div>
+    </div>
+    <p class="caption">レーンは3〜4本まで。矢印が交差し始めたら図を2枚に割る</p>
+    <div class="footlogo"><span class="dot"></span>DOJO</div>
+    <div class="deckfoot">8</div>
+  </section>
+
+  <!-- 9. 箇条書き -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">箇条書き</h2>
+    <p class="lead reveal" style="--i:1">自習資料だからこそ許される部品。<b>階層は2段まで</b>、色でなく字の大きさで示す。</p>
+    <div class="bullets body reveal" style="--i:2">
+      <ul>
+        <li>チームごとにプロセスが異なる
+          <ul>
+            <li>実装前に設計文書が必要な場合がある</li>
+            <li>テンプレートが違うこともある</li>
+            <li>そもそも設計文書の運用がないチームもある</li>
+          </ul>
+        </li>
+        <li>個人としての利用
+          <ul>
+            <li>チームで必須でなくても、自分の学びのために書いてよい</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="footlogo"><span class="dot"></span>DOJO</div>
+    <div class="deckfoot">9</div>
+  </section>
+
+  <!-- 10. アイコン行 -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">アイコン行</h2>
+    <p class="lead reveal" style="--i:1">並列する概念を本題の前に一目で見せる導入部品。<b>意味を運ぶときだけ</b>使う。</p>
+    <div class="iconrow body reveal" style="--i:2">
+      <div class="ic"><svg width="64" height="64" viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="10" fill="none" stroke="#26333F" stroke-width="3"/></svg><p>本人確認</p></div>
+      <div class="ic"><svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="#26333F" stroke-width="3"/></svg><p>リスク判定</p></div>
+      <div class="ic"><svg width="64" height="64" viewBox="0 0 64 64"><path d="M32 6 L58 58 L6 58 Z" fill="none" stroke="#26333F" stroke-width="3" stroke-linejoin="round"/></svg><p>不正防止</p></div>
+    </div>
+    <p class="caption">図形はすべて --ink の線画のみ。塗り分けない＝3つが同格だと伝わる</p>
+    <div class="footlogo"><span class="dot"></span>DOJO</div>
+    <div class="deckfoot">10</div>
+  </section>
+
+  <!-- 11. ルール -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">ルール</h2>
+    <p class="lead reveal" style="--i:1">迷ったら、<b>「キャプション無しで図の意味が伝わるか」</b>を基準にする。</p>
+    <div class="dodont reveal" style="--i:2">
+      <div class="col do">
+        <h3>やる</h3>
+        <ul>
+          <li>1枚1概念、説明は箇条書き・図で尽くす</li>
+          <li>図には必ずキャプションを添える</li>
+          <li>図のノードは --ink 単色、強調は --accent 1箇所だけ</li>
+        </ul>
+      </div>
+      <div class="col dont">
+        <h3>やらない</h3>
+        <ul>
+          <li>1枚に複数の概念を詰めて箇条書きで誤魔化す</li>
+          <li>図のノードを役割ごとに色分けする</li>
+          <li>アイコンを装飾目的だけで置く</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footlogo"><span class="dot"></span>DOJO</div>
+    <div class="deckfoot">11</div>
+  </section>
+
+  <!-- 12. ファイル -->
+  <section class="slide">
+    <h2 class="pagehead reveal" style="--i:0">ファイル</h2>
+    <p class="lead reveal" style="--i:1">ルールと見本を<b>分けて置く</b>。</p>
+    <div class="filecards reveal" style="--i:2">
+      <div class="fc"><code>rules.html</code><p>この型のルールと根拠</p></div>
+      <div class="fc"><code>sample.html</code><p>ルールをルール自身で説明した見本デッキ（この13枚）</p></div>
+    </div>
+    <div class="footlogo"><span class="dot"></span>DOJO</div>
+    <div class="deckfoot">12</div>
+  </section>
+
+  <!-- 13. クロージング -->
+  <section class="slide s-close">
+    <div class="shape blob"></div><div class="shape circle"></div>
+    <div class="body">
+      <h2 class="reveal" style="--i:0">Thank you</h2>
+      <p class="cite reveal" style="--i:1">色・書体・見出しは Paper / Ledger と共通。参照：Mercari DevDojo「KYC In Action」「Introduction to Design Doc」の構成パターンを分析し一般化</p>
+    </div>
+    <div class="footlogo"><span class="dot"></span>DOJO</div>
+  </section>
+
+  <button class="arrow prev" id="prev" aria-label="前のスライド">‹</button>
+  <button class="arrow next" id="next" aria-label="次のスライド">›</button>
+  <div class="navhit prev" id="hitPrev"></div>
+  <div class="navhit next" id="hitNext"></div>
+  <div class="hint" id="hint">← → で送る</div>
+</div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  var deck = document.getElementById('deck');
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+
+  function render(){
+    slides.forEach(function(s, idx){ s.classList.toggle('is-active', idx === i); });
+    prevBtn.disabled = i === 0;
+    nextBtn.disabled = i === slides.length - 1;
+  }
+  function go(delta){
+    var n = i + delta;
+    if(n < 0 || n >= slides.length) return;
+    i = n; render();
+  }
+  prevBtn.addEventListener('click', function(){ go(-1); });
+  nextBtn.addEventListener('click', function(){ go(1); });
+  document.getElementById('hitPrev').addEventListener('click', function(){ go(-1); });
+  document.getElementById('hitNext').addEventListener('click', function(){ go(1); });
+  deck.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === ' '){ go(1); e.preventDefault(); }
+    if(e.key === 'ArrowLeft'){ go(-1); e.preventDefault(); }
+  });
+  window.addEventListener('keydown', function(e){
+    if(document.activeElement === document.body){
+      if(e.key === 'ArrowRight'){ go(1); }
+      if(e.key === 'ArrowLeft'){ go(-1); }
+    }
+  });
+  setTimeout(function(){
+    var h = document.getElementById('hint');
+    if(h){ h.style.transition = 'opacity .6s'; h.style.opacity = '0'; }
+  }, 3200);
+
+  render();
+  deck.focus();
+})();
+</script>
+</body>
+</html>

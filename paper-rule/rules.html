@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper の設計ルール</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Lato:wght@400;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#F8F6F2; --card:#FFFFFF;
+  --ink:#26333F; --ink-2:#4E5F60; --ink-3:#8B98A4;
+  --line:#E6E1D9; --fill:#F1ECE4;
+  --accent:#D9822B; --neg:#DC4A4A; --pos:#12776A;
+  --shadow:rgba(38,51,63,.10);
+  --accent-wash:rgba(217,130,43,.09);
+  --neg-wash:rgba(220,74,74,.08);
+  --pos-wash:rgba(18,119,106,.08);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Lato","Noto Sans JP",sans-serif;
+  line-height:1.75;
+}
+h1,h2,h3,.jp-head{
+  font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-serif;
+  color:var(--ink);
+}
+b,strong{font-weight:700;}
+code, pre{
+  font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+}
+
+.wrap{
+  max-width:1180px; margin:0 auto;
+  padding:0 clamp(20px,4vw,56px) 100px;
+}
+
+/* masthead */
+.mast{
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(650px 420px at 92% 0%, var(--accent-wash), transparent 62%),
+    radial-gradient(600px 420px at 4% 100%, var(--pos-wash), transparent 62%),
+    var(--paper);
+  border-bottom:1px solid var(--line);
+  padding:56px clamp(20px,4vw,56px) 44px;
+}
+.eyebrow{
+  font:700 12px/1 "Lato",sans-serif; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 14px;
+}
+.mast h1{
+  font-size:clamp(30px,4.4vw,46px); font-weight:900; margin:0 0 12px;
+  border-left:5px solid var(--accent); padding-left:18px;
+}
+.mast p.lead{
+  max-width:62ch; color:var(--ink-2); font-size:16px; margin:0 0 22px;
+}
+.source{
+  border-left:3px solid var(--line);
+  padding:10px 0 10px 16px;
+  color:var(--ink-3); font-size:13px; max-width:70ch;
+}
+.source code{color:var(--ink-2);}
+
+/* layout */
+.layout{
+  display:grid; grid-template-columns:200px minmax(0,1fr); gap:56px;
+  margin-top:44px;
+}
+nav.toc{ position:sticky; top:24px; align-self:start; }
+nav.toc ol{ list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li{ counter-increment:toc; margin-bottom:2px; }
+nav.toc a{
+  display:flex; gap:8px; padding:7px 0;
+  font-size:13.5px; color:var(--ink-2); text-decoration:none;
+  border-bottom:1px solid transparent;
+}
+nav.toc a:hover, nav.toc a:focus-visible{ color:var(--accent); outline:none; }
+nav.toc a::before{
+  content:counter(toc); color:var(--ink-3); font:700 11px/1.4 "Lato",sans-serif;
+  min-width:1.4em;
+}
+
+main{ min-width:0; }
+section.rule{ padding-top:68px; scroll-margin-top:20px; }
+section.rule:first-child{ padding-top:0; }
+section.rule + section.rule{ border-top:1px solid var(--line); }
+
+h2.head{
+  font-size:22px; font-weight:700; margin:0 0 6px;
+  border-left:4px solid var(--accent); padding-left:14px;
+  display:flex; align-items:baseline; gap:10px;
+}
+h2.head .num{ font:700 13px/1 "Lato",sans-serif; color:var(--ink-3); }
+.dek{ color:var(--ink-2); max-width:66ch; margin:0 0 26px; font-size:15px; }
+
+.callout{
+  background:var(--card); border-left:3px solid var(--accent);
+  border-radius:2px; padding:18px 22px; margin:20px 0;
+  box-shadow:0 1px 2px var(--shadow);
+  font-weight:700; max-width:66ch;
+}
+
+/* code */
+pre{
+  background:var(--fill); border:1px solid var(--line); border-radius:8px;
+  padding:16px 18px; overflow-x:auto; font-size:12.5px; line-height:1.65;
+  color:var(--ink-2); margin:18px 0;
+}
+pre .k{ color:var(--accent); }
+pre .c{ color:var(--ink-3); font-style:italic; }
+
+/* tables */
+.tbl-wrap{ overflow-x:auto; margin:18px 0; }
+table{ border-collapse:collapse; width:100%; min-width:560px; font-size:13.5px; }
+th{
+  text-align:left; font:700 11px/1.4 "Lato",sans-serif; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--ink-3); border-bottom:1px solid var(--line); padding:8px 14px 10px 0;
+}
+td{ padding:11px 14px 11px 0; border-bottom:1px solid var(--line); vertical-align:top; color:var(--ink-2); }
+td:first-child, th:first-child{ color:var(--ink); font-weight:700; white-space:nowrap; }
+tr:last-child td{ border-bottom:none; }
+.unclear{ color:var(--ink-3); }
+.unclear::after{ content:" *"; }
+
+/* color swatches */
+.swatches{
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:14px; margin:20px 0 8px;
+}
+.swatch{
+  background:var(--card); border:1px solid var(--line); border-radius:10px;
+  overflow:hidden; box-shadow:0 1px 2px var(--shadow);
+}
+.swatch .chip{ height:64px; }
+.swatch .meta{ padding:12px 14px 14px; }
+.swatch .name{ font:700 13.5px "Lato",monospace; margin:0 0 2px; }
+.swatch .hex{ font:400 11.5px "Lato",monospace; color:var(--ink-3); margin:0 0 8px; }
+.swatch .note{ font-size:12px; color:var(--ink-2); margin:0; }
+
+/* do / dont — accent と ink-3 のみ使用（赤緑は Before/After 専用のため使わない） */
+.dodont{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:20px 0; }
+.dodont .col h3{ font-size:12px; letter-spacing:.08em; text-transform:uppercase; margin:0 0 10px; font-family:"Lato",sans-serif; }
+.dodont .do h3{ color:var(--accent); }
+.dodont .dont h3{ color:var(--ink-3); }
+.dodont ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px; }
+.dodont li{ font-size:13.5px; color:var(--ink-2); padding-left:22px; position:relative; }
+.dodont .do li::before{ content:"○"; position:absolute; left:0; color:var(--accent); font-weight:700; }
+.dodont .dont li::before{ content:"×"; position:absolute; left:0; color:var(--ink-3); font-weight:700; }
+@media (max-width:640px){ .dodont{ grid-template-columns:1fr; } }
+
+/* component gallery */
+.gal{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin:18px 0; }
+.spec{
+  background:var(--card); border:1px solid var(--line); border-radius:10px;
+  padding:16px 18px; box-shadow:0 1px 2px var(--shadow);
+}
+.spec .tag{ font:700 11px "Lato",monospace; color:var(--accent); margin:0 0 8px; }
+.spec .demo{ margin-bottom:12px; }
+.spec p.d{ font-size:12.5px; color:var(--ink-2); margin:0; }
+
+/* mini live mockups（sample.html の実例から） */
+.m-cards{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.m-card{ background:var(--fill); border-left:3px solid var(--accent); border-radius:3px; padding:9px 10px; }
+.m-card .t{ font:700 11.5px "Zen Kaku Gothic New",sans-serif; color:var(--accent); margin:0 0 3px; }
+.m-card .d{ font-size:10.5px; color:var(--ink-2); margin:0; line-height:1.5; }
+
+.m-steps{ display:flex; gap:6px; }
+.m-step{ flex:1; background:var(--fill); border-radius:3px; padding:8px 9px; }
+.m-step .n{ font:700 9px "Lato",sans-serif; color:var(--ink-3); }
+.m-step .d{ font-size:10px; font-weight:700; margin-top:3px; line-height:1.4; }
+
+.m-bar{ display:flex; gap:8px; }
+.m-bar div{ flex:1; border-radius:5px; padding:10px 11px; font-size:10.5px; }
+.m-bar .neg{ background:var(--neg-wash); }
+.m-bar .pos{ background:var(--pos-wash); }
+.m-bar .lbl-neg{ color:var(--neg); font-weight:700; margin:0 0 3px; }
+.m-bar .lbl-pos{ color:var(--pos); font-weight:700; margin:0 0 3px; }
+.m-bar p{ margin:0; color:var(--ink-2); }
+
+.m-quote{ background:var(--fill); border-radius:6px; padding:14px 16px; text-align:center; }
+.m-quote p{ margin:0; font:700 13px "Lato",sans-serif; }
+.m-quote span{ color:var(--accent); }
+
+.m-highlight{ font:700 13px/1.5 "Zen Kaku Gothic New",sans-serif; color:var(--accent); }
+
+.m-close{ border:1px solid var(--accent); border-radius:6px; padding:12px 14px; text-align:center; font-weight:700; font-size:12px; }
+
+/* file list */
+.files{ display:flex; flex-direction:column; gap:10px; margin:18px 0; }
+.file{ display:flex; gap:14px; align-items:baseline; }
+.file code{ background:var(--fill); border-radius:4px; padding:3px 8px; font-size:12.5px; font-weight:700; white-space:nowrap; }
+.file span{ color:var(--ink-2); font-size:13.5px; }
+
+footer.note{
+  margin-top:70px; padding-top:22px; border-top:1px solid var(--line);
+  color:var(--ink-3); font-size:12px; max-width:70ch;
+}
+
+@media (max-width:860px){
+  .layout{ grid-template-columns:1fr; }
+  nav.toc{
+    position:sticky; top:0; z-index:5; background:var(--paper);
+    padding:10px 0; border-bottom:1px solid var(--line);
+    overflow-x:auto;
+  }
+  nav.toc ol{ display:flex; gap:4px; white-space:nowrap; }
+  nav.toc a::before{ display:none; }
+  nav.toc a{ padding:6px 10px; background:var(--card); border-radius:20px; border:1px solid var(--line); }
+}
+</style>
+</head>
+<body>
+
+<div class="mast">
+  <div class="wrap" style="padding:0;">
+    <p class="eyebrow">LT Slide Design — Rule Book</p>
+    <h1>Paper の設計ルール</h1>
+    <p class="lead">プロジェクタ前提の温白地スライド。カードと文字で組み、必要なところにだけ図を置く。全10章のルールまとめ。</p>
+  </div>
+</div>
+
+<div class="wrap">
+<div class="layout">
+
+<nav class="toc">
+  <ol>
+    <li><a href="#s1">何のための型か</a></li>
+    <li><a href="#s2">骨格</a></li>
+    <li><a href="#s3">色</a></li>
+    <li><a href="#s4">文字</a></li>
+    <li><a href="#s5">影のつくり</a></li>
+    <li><a href="#s6">コンポーネント</a></li>
+    <li><a href="#s7">図の描き方</a></li>
+    <li><a href="#s8">ルール</a></li>
+    <li><a href="#s9">1枚ぶんの雛形</a></li>
+    <li><a href="#s10">ファイル</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<section class="rule" id="s1">
+  <h2 class="head"><span class="num">01</span>何のための型か</h2>
+  <p class="dek">1枚に載せるのは<b>見出し＋1つの部品＋一文</b>だけ。部品はカード・手順・対比・引用・数字・図のいずれかひとつ。枚数が増えても崩れないことを優先しているので、代わりに1枚あたりの情報量は絞られる。</p>
+  <div class="callout">
+    迷ったら次の一点だけを見る：その1枚は、見出しと1つの部品と一文で言い切れるか。<br>
+    言い切れないなら、足すのではなく2枚に割る。
+  </div>
+</section>
+
+<section class="rule" id="s2">
+  <h2 class="head"><span class="num">02</span>骨格</h2>
+  <p class="dek">16:9固定のステージを1つ作り、その中を<b>コンテナクエリ単位（cqw / cqh）</b>だけで組む。これで画面サイズが変わっても比率が崩れない。<code>rem</code> や <code>px</code> を混ぜた瞬間に崩れるので混ぜない。</p>
+<pre>.deck{
+  width: min(100vw, 177.78vh);   <span class="c">/* 16:9を維持 */</span>
+  height: min(56.25vw, 100vh);
+  container-type: size;          <span class="c">/* これがcqwの基準になる */</span>
+  overflow: hidden;              <span class="c">/* 外枠に角丸はつけない */</span>
+  background:
+    radial-gradient(80cqw 62cqw at 88% 4%, rgba(206,124,124,.055), transparent 62%),
+    radial-gradient(72cqw 52cqw at 4% 98%, rgba(217,130,43,.05), transparent 62%),
+    <span class="k">var(--paper)</span>;             <span class="c">/* 混白+ごく薄い2枚のにじみ */</span>
+}
+.slide{
+  position: absolute; inset: 0;
+  padding: 5.6cqw 6.2cqw 12.4cqw;  <span class="c">/* 下だけ広い = フッターの逃げ */</span>
+  display: flex; flex-direction: column;
+}</pre>
+  <p class="dek" style="margin-top:0;">1枚の中身は上から <code>h2</code>（見出し）→ <code>.body</code>（<code>flex:1</code> で残りを埋めて中央寄せ）→ <code>.takeaway</code>（下部中央の一文）。<code>.cite</code> と <code>.deckfoot</code> は絶対配置で、全ページ同じ位置に出る。</p>
+</section>
+
+<section class="rule" id="s3">
+  <h2 class="head"><span class="num">03</span>色</h2>
+  <p class="dek">地は純白にしない。地とカードの2段だけで温度差をつくる。ダークモードには対応しない — 会場のプロジェクタで白地に出す前提なので <code>prefers-color-scheme</code> は書かない。</p>
+
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#F8F6F2"></div><div class="meta"><p class="name">--paper</p><p class="hex">#F8F6F2</p><p class="note">地。純白にしない。ここが温かいだけで印象が決まる。</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#FFFFFF;border-bottom:1px solid var(--line)"></div><div class="meta"><p class="name">--card</p><p class="hex">#FFFFFF</p><p class="note">カード面。地との差はこの一段だけで足りる。</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#26333F"></div><div class="meta"><p class="name">--ink</p><p class="hex">#26333F</p><p class="note">本文・見出し。黒ではなく紺寄り。</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#4E5F60"></div><div class="meta"><p class="name">--ink-2</p><p class="hex">#4E5F60</p><p class="note">説明文・補足。カード内の本文はすべてこれ。</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#8B98A4"></div><div class="meta"><p class="name">--ink-3</p><p class="hex">#8B98A4</p><p class="note">ラベル・出典・ページ番号。読ませない文字。</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#E6E1D9"></div><div class="meta"><p class="name">--line</p><p class="hex">#E6E1D9</p><p class="note">罫線。フッターと <code>.points</code> の区切りだけ。</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#F1ECE4"></div><div class="meta"><p class="name">--fill</p><p class="hex">#F1ECE4</p><p class="note">図の面。地とカードの中間の温度。図に寒色の面を置かない。</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#D9822B"></div><div class="meta"><p class="name">--accent</p><p class="hex">#D9822B</p><p class="note">見出しの縦罫、カード左罫、アイコン、締めの一行。</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#DC4A4A"></div><div class="meta"><p class="name">--neg</p><p class="hex">#DC4A4A</p><p class="note">Before側のみ。それ以外では絶対に使わない。</p></div></div>
+    <div class="swatch"><div class="chip" style="background:#12776A"></div><div class="meta"><p class="name">--pos</p><p class="hex">#12776A</p><p class="note">After側のみ。同上。</p></div></div>
+  </div>
+
+  <div class="callout">
+    オレンジは1枚に1役だけ。見出しの縦罫は全ページ共通なので数に入れない。そのうえで「タイトルの一句」「カード見出し」「単位」「締めの一行」のどれかひとつに絞る。2つ以上に振ると、どこを見ればいいか分からなくなる。
+  </div>
+</section>
+
+<section class="rule" id="s4">
+  <h2 class="head"><span class="num">04</span>文字</h2>
+  <p class="dek">2書体だけ。和文の見出しは <b style="font-family:'Zen Kaku Gothic New'">Zen Kaku Gothic New</b>、欧文と数字は <b style="font-family:'Lato'">Lato</b>。本文の和文は Noto Sans JP に落ちる。<code>font-family:"Lato","Noto Sans JP",…</code> の順で書くと、欧文だけLatoになる。</p>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>役割</th><th>クラス</th><th>サイズ</th><th>太さ</th><th>備考</th></tr></thead>
+    <tbody>
+      <tr><td>表紙タイトル</td><td>h1</td><td>5.1cqw</td><td>700</td><td>1行10字前後まで。2行が上限</td></tr>
+      <tr><td>ページ見出し</td><td>h2</td><td>3.55cqw</td><td>700</td><td>左にオレンジ縦罫。1行20字まで</td></tr>
+      <tr><td>締めの一行</td><td>.close .l3</td><td>4.4cqw</td><td>900</td><td>オレンジ。ここだけ900を使う</td></tr>
+      <tr><td>引用</td><td>.quote .q</td><td>3.5cqw</td><td>700</td><td>2行以内</td></tr>
+      <tr><td>カード見出し</td><td>.pcard .t</td><td>1.8cqw</td><td>700</td><td>オレンジ。10字以内</td></tr>
+      <tr><td>カード本文</td><td>.pcard .d</td><td>1.4cqw</td><td>400</td><td>ink-2。4列なら40字、3列なら50字まで</td></tr>
+      <tr><td>下部の一文</td><td>.takeaway</td><td>1.85cqw</td><td>400</td><td>中央寄せ。強調は&lt;b&gt;で1〜2語</td></tr>
+      <tr><td>出典・注記</td><td>.cite</td><td>1.05cqw</td><td>400</td><td>ink-3、読ませない位置</td></tr>
+      <tr><td class="unclear">フッター</td><td class="unclear">.deckfoot</td><td class="unclear">3.05cqw</td><td class="unclear">700/400</td><td class="unclear">トーク名とページ番号（左右分割）</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="font-size:12px;color:var(--ink-3);margin-top:-6px;">* 印の行は元写真の反射・モアレで一部判読が難しく、推定を含みます。実運用で数値がずれていたら書き換えてください。</p>
+</section>
+
+<section class="rule" id="s5">
+  <h2 class="head"><span class="num">05</span>影のつくり方</h2>
+  <p class="dek">影は1種類だけ（<code>drop-shadow</code> 系、強めない）。強い影を足すと絵の質感が消える。同じ台紙の中で「影あり」と「影なし」を混在させない — 役割を変えると、意図が曖昧になって伝わらなくなる。</p>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>種類</th><th>使う値</th><th>使う場面</th></tr></thead>
+    <tbody>
+      <tr><td>影つき</td><td class="unclear"><code>filter: drop-shadow(0 4px 12px rgba(38,51,63,.12))</code></td><td>.pcard / .quote / .filled、地の中で選択肢を示すとき</td></tr>
+      <tr><td>影なし</td><td><code>border-radius: 1.5cqw</code>（角丸のみ）</td><td>.step / .stat / .chip、単位・見出し・数字</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="rule" id="s6">
+  <h2 class="head"><span class="num">06</span>コンポーネント</h2>
+  <p class="dek">見本は <code>sample.html</code>。各ページが、そのページで説明しているコンポーネントそのもので組んである。以下はその実例に、対応クラスをあてたもの。</p>
+
+  <div class="gal">
+    <div class="spec">
+      <p class="tag">.pcard.four</p>
+      <div class="demo m-cards">
+        <div class="m-card"><p class="t">声の大きい人</p><p class="d">声の大きさでの決定はただの「抑圧」</p></div>
+        <div class="m-card"><p class="t">エスカレーション</p><p class="d">「ユーザーから遠い人」に決めてもらう</p></div>
+        <div class="m-card"><p class="t">ユーザーテスト</p><p class="d">どのユーザーに聞くかで結論が変わる</p></div>
+        <div class="m-card"><p class="t">ビジョン</p><p class="d">自分の都合に合わせて解釈できてしまう</p></div>
+      </div>
+      <p class="d">要約カード。3〜4列。本文は40〜50字まで。</p>
+    </div>
+
+    <div class="spec">
+      <p class="tag">.steps</p>
+      <div class="demo m-steps">
+        <div class="m-step"><div class="n">STEP 01</div><div class="d">誰の行動が変わったか</div></div>
+        <div class="m-step"><div class="n">STEP 02</div><div class="d">どの指標に現れる</div></div>
+        <div class="m-step"><div class="n">STEP 03</div><div class="d">事業にどう効くか</div></div>
+      </div>
+      <p class="d">手順・時系列。番号に沿って3〜4個、1見出し10字以内。</p>
+    </div>
+
+    <div class="spec">
+      <p class="tag">.bar（Before / After）</p>
+      <div class="demo m-bar">
+        <div class="neg"><p class="lbl-neg">Before</p><p>どちらが正しいか？</p></div>
+        <div class="pos"><p class="lbl-pos">After</p><p>仮説をどう検証するか？</p></div>
+      </div>
+      <p class="d">左右2軸の対比。左右で行トーンをそろえる。色は --neg / --pos のみ。</p>
+    </div>
+
+    <div class="spec">
+      <p class="tag">.quote</p>
+      <div class="demo m-quote">
+        <p>Everyone is right — <span>partially.</span></p>
+      </div>
+      <p class="d">引用。静かな「まとめ」に使う。2行以内。</p>
+    </div>
+
+    <div class="spec">
+      <p class="tag">.highlight</p>
+      <div class="demo"><p class="m-highlight">検証は実行されなかった。<br>皆はそれを受け入れた。</p></div>
+      <p class="d">地に直書きの強めの一行。最大24cqw、枠も影もつけない。</p>
+    </div>
+
+    <div class="spec">
+      <p class="tag">.cclose</p>
+      <div class="demo"><div class="m-close">わかり合えないまま、一緒に進む</div></div>
+      <p class="d">章末だけに使う締めの一行。オレンジの枠のみ。</p>
+    </div>
+  </div>
+
+  <div class="tbl-wrap" style="margin-top:8px;">
+  <table>
+    <thead><tr><th>クラス</th><th>系統</th><th>概要</th></tr></thead>
+    <tbody>
+      <tr><td>.s-title</td><td>表紙</td><td>全体で1枚だけ。<code>.metaback</code> に開催情報</td></tr>
+      <tr><td>.s-section</td><td>章区切り</td><td>独立するときだけ、見出し・罫はなく番号だけ置く</td></tr>
+      <tr><td>.pcard.filled</td><td>選択の要約</td><td>本文40字まで、アイコンは寒色パステル</td></tr>
+      <tr><td>.pcard.three</td><td>3列</td><td>3列並ぶので本文50字以内</td></tr>
+      <tr><td>.stats</td><td>数字と単位</td><td>3つまで、単位はオレンジ、数字は ink のまま</td></tr>
+      <tr><td class="unclear">.refbox</td><td class="unclear">出典参照</td><td class="unclear">16字以内、返信元・識別子を添える</td></tr>
+      <tr><td>.figure + .figcaption</td><td>図つき</td><td>図は塗りつぶしカードの中、キャプションは左に入れる</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="dek" style="margin-top:14px;">写真やイラストを扱う図は、白カードを使わない。縦横比 1:1 前後の枠で作って中央に置き、はみ出しは許さない。</p>
+</section>
+
+<section class="rule" id="s7">
+  <h2 class="head"><span class="num">07</span>図の描き方</h2>
+  <p class="dek">図はSVGで描く。形は自由でよいが、色は4つ、線は2種、破線は1種までにやさしく絞る。増やした瞬間に、図はページの中で一番迷いやすい要素になる。</p>
+<pre>.g-ink    { fill: none; stroke: <span class="k">var(--ink)</span>;    stroke-width: 2; }
+.g-fill   { fill: <span class="k">var(--ink)</span>;   fill-opacity: .08; }
+.g-accent { fill: <span class="k">var(--accent)</span>; }
+.g-pos    { fill: none; stroke: <span class="k">var(--pos)</span>; stroke-width: 2.4; }
+.g-neg    { fill: none; stroke: <span class="k">var(--neg)</span>; stroke-width: 2.4; stroke-dasharray: 4 3; }</pre>
+  <p class="dek">置き方は2つ。</p>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>パターン</th><th>使い方</th><th>使う場面</th></tr></thead>
+    <tbody>
+      <tr><td>.figrow + .figcard</td><td>左に説明、右62%に白カードの図</td><td>図に意味の補足が要るとき</td></tr>
+      <tr><td>.rightUI</td><td>地に直書き、最大74cqw、枠も影もなし</td><td>図だけで読み取れるとき</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="dodont">
+    <div class="col do">
+      <h3>やる</h3>
+      <ul>
+        <li>文字はラベル（15px）と補助（13px）の2段だけ</li>
+        <li>線幅は2.4（実線）と2（基本）の2種だけ</li>
+        <li>細線は0.7〜1pxで罫線用途に限定</li>
+        <li>.fill / .accent は塗り分けの役割をきっちり分ける</li>
+      </ul>
+    </div>
+    <div class="col dont">
+      <h3>やらない</h3>
+      <ul>
+        <li>矢印を3つ以上置く</li>
+        <li>図の中に説明文を書き込む（左の .body へ出す）</li>
+        <li>図の中だけ余白を持たせる（カードだけ伸びて図が縮む）</li>
+        <li>色を4種以上に増やす</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="rule" id="s8">
+  <h2 class="head"><span class="num">08</span>ルール</h2>
+  <div class="dodont">
+    <div class="col do">
+      <h3>やる</h3>
+      <ul>
+        <li>枠は16:9のみ</li>
+        <li>色は同一トーンで統一する（数を優先しない）</li>
+        <li>1枚には見出し＋部品1つ＋一文まで</li>
+        <li>言い切れない情報は次の1枚に送る</li>
+        <li>差し替えても崩れない、はみ出しは禁止</li>
+      </ul>
+    </div>
+    <div class="col dont">
+      <h3>やらない</h3>
+      <ul>
+        <li>ダークモード対応（プロジェクタ前提）</li>
+        <li>オレンジを1枚に2箇所以上使う</li>
+        <li>赤・緑（--neg/--pos）をBefore/After以外で使う</li>
+        <li>同じ1枠で影ありカードと影なしカードを混ぜる</li>
+        <li>カードを5枚以上に増やす（4枚が上限）</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="rule" id="s9">
+  <h2 class="head"><span class="num">09</span>1枚ぶんの雛形</h2>
+<pre>&lt;section class="slide"&gt;
+  &lt;h2&gt;見出し&lt;/h2&gt;
+  &lt;div class="body"&gt;
+    &lt;!-- 部品ひとつ：cards / steps / bar / quote / stats / 図 --&gt;
+  &lt;/div&gt;
+  &lt;p class="takeaway reveal" style="--i:1"&gt;締めの一文。強調は&lt;b&gt;で1語&lt;/b&gt;&lt;/p&gt;
+  &lt;p class="cite"&gt;出典行、これ&lt;/p&gt;
+&lt;/section&gt;</pre>
+  <p class="dek" style="margin-top:0;">登場アニメーションは <code>class="reveal"</code> と <code>style="--i:N"</code> だけ。全要素に0.14秒ずつ遅れて出る。動きはこれ以上増やさない。</p>
+</section>
+
+<section class="rule" id="s10">
+  <h2 class="head"><span class="num">10</span>ファイル</h2>
+  <div class="files">
+    <div class="file"><code>CLAUDE.md</code><span>何のための型か、意図と制約の正本はここ</span></div>
+    <div class="file"><code>rules.html</code><span>見本と地図、スタイルシート（コード）を含むのはここ（この文書）</span></div>
+    <div class="file"><code>index.html</code><span>人が読むための版</span></div>
+    <div class="file"><code>sample.html</code><span>このルールを、このデザイン自身で説明した見本デッキ</span></div>
+  </div>
+</section>
+
+<footer class="note">
+  design-rule フォルダの写真13枚（画面撮影・一部モアレ/反射あり）と、参照元のsample.pdf（Scrum Fest Osaka 2026の見本デッキ全17枚）から再構成。<code>*</code> を付けた項目は撮影状態により判読が難しく、文脈から推定しています。
+</footer>
+
+</main>
+</div>
+</div>
+</body>
+</html>
