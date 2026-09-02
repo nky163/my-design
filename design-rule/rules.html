@@ -55,6 +55,7 @@ li b{ color:var(--ink); }
 pre{
   background:var(--fill); border:1px solid var(--line); border-radius:8px;
   padding:16px 18px; margin:16px 0; overflow-x:auto;
+  white-space:pre-wrap; overflow-wrap:anywhere;
   font-size:12.5px; line-height:1.7; color:var(--ink-2);
 }
 
@@ -103,8 +104,9 @@ tr:last-child td{ border-bottom:none; }
       <tr><td>締めの一文</td><td><b>必須</b>。ただし表紙と締めの1枚は除く</td><td>使わない</td></tr>
       <tr><td>.slide の余白</td><td>4.4cqw 5.2cqw 6cqw</td><td>3.6cqw 5.2cqw 5.2cqw</td></tr>
       <tr><td>本文の段</td><td>M ＝ 1.8cqw</td><td>S ＝ 1.2cqw</td></tr>
-      <tr><td>.footlogo</td><td>800 ／ --ink でデッキ名</td><td>400 ／ --ink-3 で原典URL</td></tr>
+      <tr><td>.footlogo</td><td>0.8cqw ／ 800 ／ --ink でデッキ名</td><td>0.8cqw ／ 400 ／ --ink-3 で原典URL</td></tr>
 </tbody></table></div>
+  <p class="fine">この6行は<b>02章の骨格を書き換えて適用しない</b>。上書きは1枚ずつ <code>&lt;section class="slide"&gt;</code> の側で行う。余白は <code>&lt;section class="slide" style="padding:3.6cqw 5.2cqw 5.2cqw"&gt;</code> のようにその枚に直接書く。サイズ・太さ・色は、その枚にモードのクラスを足して（例 <code>class="slide note"</code>）<code>.slide.note h2{ font-size:1.8cqw; }</code> <code>.footlogo.src{ font:400 .8cqw …; color:var(--ink-3); }</code> のように、骨格の<b>後ろに</b>数行の上書きを置く。引用ブロックそのものは1文字も変えない。</p>
   <div class="callout">判定はこの一点だけ — その1枚は、見出しと部品1つと一文で言い切れるか。<br><b>言い切れないなら、足すのではなく2枚に割る。</b></div>
 </section>
 
@@ -163,7 +165,7 @@ body{
 })();
 &lt;/script&gt;
 </pre>
-  <p class="fine">HTML 側で守るのは3つだけ。全体を <code>&lt;div class="deck" id="deck"&gt;</code> で囲む／各枚は <code>&lt;section class="slide"&gt;</code> で、1枚目にだけ <code>is-active</code> を足す／動きは <code>class="reveal"</code> と <code>style="--i:N"</code> だけで、これ以上増やさない。</p>
+  <p class="fine">HTML 側で守るのは3つだけ。全体を <code>&lt;div class="deck" id="deck"&gt;</code> で囲む／各枚は <code>&lt;section class="slide"&gt;</code> で、1枚目にだけ <code>is-active</code> を足す／動きは <code>class="reveal"</code> と <code>style="--i:N"</code> だけで、これ以上増やさない。ページ番号は <code>.deckfoot</code>（右下）、デッキ名か原典は <code>.footlogo</code>（左下）に置く — どちらも位置だけが骨格で決まっており、中身と見た目は01章のモードの表に従う。なお骨格は base の <code>font-size</code> を持たないので、サイズを書かない要素はブラウザ既定の16px（cqw に追従しない固定値）で描かれる。文字を置く要素には必ず04章の5段のどれかを明示する。</p>
 </section>
 
 <section class="rule">
@@ -211,7 +213,7 @@ body{
   <p class="dek">1枚に載る量の上限はモードで決まる。LT登壇は<b>見出し＋部品1つ＋一文</b>まで。読解メモは1枚で完結してよく、本文は長くてよいが出典を必ず持つ。どちらも、上限を超えたら足すのではなく割る。以下は両モード共通。</p>
   <ul>
     <li><b>余白</b> — 左右は両モードとも <b>5.2cqw</b>。上下だけがモードで変わる（01章の表）。この線の外に文字も面も出さない。</li>
-    <li><b>単位</b> — <b>cqw のみ</b>。例外は border の <code>1px</code> だけ。<code>rem</code> / <code>px</code> / <code>vw</code> を混ぜない。角丸も線幅も cqw で書く。</li>
+    <li><b>単位</b> — <b>cqw のみ</b>。例外は2つ、border の <code>1px</code> と、丸い形を作るときの <code>border-radius:999px</code> だけ（丸めきる指定なので cqw で書くと意味のない大きな数になる）。それ以外の角丸も線幅も cqw で書き、<code>rem</code> / <code>px</code> / <code>vw</code> を混ぜない。</li>
     <li><b>影</b> — 次の2段だけ。<code>drop-shadow</code> は使わない。3つ目の選択肢は<b>影を使わないこと</b>で、区切りたいだけなら <code>background:var(--fill)</code> のほうが静かに済む。迷ったら影なしを選ぶ。</li>
   </ul>
 <div class="tbl"><table>
@@ -229,7 +231,7 @@ body{
     <li><b>色</b> — 03章の11トークンと、その <code>rgba</code> だけ。図のためだけの色を作らない。</li>
     <li><b>作り</b> — <code>div</code> ＋ flex でも SVG でもよい。図らしく見せるために SVG を選ぶ必要はない。四角と線と文字で足りるなら div のほうが速く、崩れにくい。</li>
     <li><b>説明文</b> — 図の中に書かない。<code>figcaption</code> か本文へ出す。図の中に置くのは短いラベルだけで、図が単体で意味を持たなくてよい。</li>
-    <li><b>線</b> — 太線と基本線の<b>2種まで</b>（例: <code>.4cqw</code> と <code>.2cqw</code>）。破線が要るなら、この2種のどちらかの見た目を変えて作り、3本目の太さを増やさない。線幅も cqw で書く — 矢印の <code>marker</code> は既定が <code>markerUnits="strokeWidth"</code> なので、<code>px</code> にすると矢印の頭だけがコンテナに追従せず投影時に消える。</li>
+    <li><b>線</b> — 太線と基本線の<b>2種まで</b>（例: <code>.4cqw</code> と <code>.2cqw</code>）。破線が要るなら、この2種のどちらかの見た目を変えて作り、3本目の太さを増やさない。線幅も cqw で書く — 矢印の <code>marker</code> は既定が <code>markerUnits="strokeWidth"</code> で線幅に比例するので、線幅を <code>px</code> にすると矢印の頭だけが固定寸法になり、コンテナの大きさを変えたときに図の他の部分と比率が合わなくなる。</li>
   </ol>
   <div class="callout"><b>SVG に <code>viewBox</code> を付けない。</b>viewBox があると CSS の <code>font-size</code> が viewBox の変換でそのまま拡大されるので、<code>font-size:.8cqw</code> と書いても .8cqw では描かれず、5段のスケールが黙って壊れる。<code>&lt;svg&gt;</code> の幅と高さは cqw で与え、<b>中の座標は % で書く</b>。</div>
 </section>
