@@ -71,7 +71,7 @@ Claude がルールを読んで、その場に合った部品と図を生成で�
 | 色トークン | **11個**（`--surround --paper --card --ink --ink-2 --ink-3 --line --fill --accent --neg --pos`） | `--surround:#171410` は8デッキ中7つが使用。`paper-rule` の `#16130F` はドリフト |
 | 横 padding | `5.2cqw` | 8デッキ完全一致 |
 | 背景のにじみ | **自由ゾーンに移す** | 実物で0/1/1/2本とバラバラ。不変ではない |
-| `.deckfoot` | `bottom:2.2cqw` / `font:400 .82cqw` / `ink-3` / `tabular-nums` | 4デッキで .8〜.85cqw の誤差のみ。中央値を採る |
+| `.deckfoot` | `bottom:2.2cqw` / `font:400 .8cqw` / `ink-3` / `tabular-nums` | 4デッキで .8〜.85cqw の誤差のみ。D3a の5段に合わせて `.8cqw` を採る |
 | `.footlogo` | **モード依存に移す** | 役割が違う（D4 参照）。ドリフトではない |
 | 影 | 2段のみ。弱 `0 .12cqw .8cqw rgba(38,51,63,.06)` / 強 `0 .2cqw 1cqw rgba(38,51,63,.14)` | 実物4デッキが共有。`drop-shadow` は使わない |
 
@@ -92,6 +92,8 @@ Claude がルールを読んで、その場に合った部品と図を生成で�
 | XL | `5.2cqw` | 表紙タイトル | — |
 
 段の外の値を使わない。LT の文字が大きいのは、1枚に載る量が少ないから。
+固定ゾーンの `.deckfoot` `.footlogo` もこの段に従う（実物の `.78`〜`.85cqw` は `XS` に丸める）。
+モード差は**サイズではなく太さと色**で出す（LT=`800`/`--ink`、読解メモ=`400`/`--ink-3`）。
 
 書体は実物どおり据え置き（不変が確認できているため）:
 `"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-serif` の順。
@@ -105,7 +107,7 @@ Claude がルールを読んで、その場に合った部品と図を生成で�
 | 出典 | 任意 | 必須（`footlogo` に原典URL） |
 | 締めの一文 | 必須 | 不要 |
 | `.slide` padding | `4.4cqw 5.2cqw 6cqw` | `3.6cqw 5.2cqw 5.2cqw` |
-| `.footlogo` | `800 .9cqw` / `--ink` / デッキ名 | `400 .78cqw` / `--ink-3` / 原典URL |
+| `.footlogo` | `800 .8cqw` / `--ink` / デッキ名 | `400 .8cqw` / `--ink-3` / 原典URL |
 | 本文の段 | M（`1.8cqw`） | S（`1.2cqw`） |
 
 ### D5. 図のルール（4行）
