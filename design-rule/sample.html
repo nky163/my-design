@@ -66,9 +66,9 @@ body{
 #s2 .modecard{ background:var(--card); border:1px solid var(--line); border-radius:.5cqw; padding:1.8cqw 2cqw 1.6cqw; box-shadow:0 .12cqw .8cqw rgba(38,51,63,.06); }
 #s2 .modename{ font-size:1.8cqw; font-weight:700; line-height:1.3; margin:0; }
 #s2 .modetag{ font:700 .8cqw "Lato",sans-serif; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin:.4cqw 0 1.2cqw; }
-#s2 .moderow{ display:flex; gap:1cqw; border-top:1px solid var(--line); padding-top:.7cqw; margin-top:.7cqw; }
-#s2 .modekey{ flex:none; width:9cqw; font-size:.8cqw; line-height:1.5; color:var(--ink-3); }
-#s2 .modeval{ font-size:.8cqw; line-height:1.5; color:var(--ink-2); }
+#s2 .moderow{ display:flex; gap:1cqw; border-top:1px solid var(--line); padding-top:.55cqw; margin-top:.55cqw; }
+#s2 .modekey{ flex:none; width:11cqw; font-size:1.2cqw; line-height:1.5; color:var(--ink-3); }
+#s2 .modeval{ font-size:1.2cqw; line-height:1.5; color:var(--ink-2); }
 #s2 .modeval b{ font-weight:700; color:var(--accent); }
 
 /* --- 3枚目：2つのゾーン -------------------------------------- */
@@ -86,7 +86,7 @@ body{
 
 /* --- 4枚目：骨格のコード ------------------------------------- */
 #s4 .skel{ flex:1; min-height:0; display:flex; align-items:center; }
-#s4 .skelcode{ width:100%; margin:0; background:var(--fill); border-radius:.5cqw; padding:1.8cqw 2.2cqw; font-family:"Lato",monospace; font-size:.8cqw; line-height:1.9; color:var(--ink-2); white-space:pre-wrap; }
+#s4 .skelcode{ width:100%; margin:0; background:var(--fill); border-radius:.5cqw; padding:1.8cqw 2.2cqw; font-family:"SFMono-Regular",Menlo,Consolas,monospace; font-size:1.2cqw; line-height:1.75; color:var(--ink-2); white-space:pre-wrap; }
 #s4 .skelcode .sel{ color:var(--ink); font-weight:700; }
 #s4 .skelcode .tok{ color:var(--accent); }
 #s4 .skelcode .cut{ color:var(--ink-3); }
@@ -94,10 +94,10 @@ body{
 /* --- 5枚目：11トークン --------------------------------------- */
 #s5 .tokengrid{ flex:1; min-height:0; display:grid; grid-template-columns:repeat(6,1fr); gap:1.2cqw; align-content:center; }
 #s5 .tokenchip{ background:var(--card); border:1px solid var(--line); border-radius:.4cqw; overflow:hidden; }
-#s5 .tokenface{ height:6.4cqw; border-bottom:1px solid var(--line); }
+#s5 .tokenface{ height:5.6cqw; border-bottom:1px solid var(--line); }
 #s5 .tokenmeta{ padding:.7cqw .8cqw .9cqw; }
-#s5 .tokenname{ font:700 .8cqw "Lato",sans-serif; color:var(--ink); margin:0; }
-#s5 .tokenhex{ font:400 .8cqw "Lato",monospace; color:var(--ink-3); margin:.2cqw 0 0; }
+#s5 .tokenname{ font:700 1.2cqw "Lato",sans-serif; color:var(--ink); margin:0; }
+#s5 .tokenhex{ font:400 1.2cqw "SFMono-Regular",Menlo,Consolas,monospace; color:var(--ink-3); margin:.2cqw 0 0; }
 
 /* --- 6枚目：accent は1枚1役 ---------------------------------- */
 #s6 .pickone{ flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; gap:1.2cqw; width:74%; margin:0 auto; }
@@ -111,10 +111,10 @@ body{
 /* --- 7枚目：5段のスケール ------------------------------------ */
 #s7 .ladder{ flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; }
 #s7 .rung{ display:flex; align-items:baseline; gap:1.6cqw; border-top:1px solid var(--line); padding-top:.7cqw; margin-top:.7cqw; }
-#s7 .rungstep{ flex:none; width:4cqw; font:900 .8cqw "Lato",sans-serif; letter-spacing:.08em; color:var(--ink-3); }
-#s7 .rungsize{ flex:none; width:7cqw; font:700 .8cqw "Lato",monospace; color:var(--accent); }
+#s7 .rungstep{ flex:none; width:5cqw; font:900 1.2cqw "Lato",sans-serif; letter-spacing:.08em; color:var(--ink-3); }
+#s7 .rungsize{ flex:none; width:9cqw; font:700 1.2cqw "SFMono-Regular",Menlo,Consolas,monospace; color:var(--accent); }
 #s7 .rungsample{ flex:1; font-weight:700; line-height:1.25; color:var(--ink); }
-#s7 .rungrole{ flex:none; width:24cqw; font-size:.8cqw; line-height:1.5; color:var(--ink-3); text-align:right; }
+#s7 .rungrole{ flex:none; width:30cqw; font-size:1.2cqw; line-height:1.5; color:var(--ink-3); text-align:right; }
 #s7 .xs .rungsample{ font-size:.8cqw; }
 #s7 .s .rungsample{ font-size:1.2cqw; }
 #s7 .m .rungsample{ font-size:1.8cqw; }
@@ -134,8 +134,8 @@ body{
 #s8 .tag.dim{ color:var(--ink-3); }
 #s8 .legend{ flex:1; display:flex; flex-direction:column; gap:1cqw; }
 #s8 .lrow{ display:flex; gap:.9cqw; align-items:baseline; }
-#s8 .lnum{ flex:none; font:900 .8cqw "Lato",sans-serif; color:var(--accent); }
-#s8 .ltext{ font-size:.8cqw; line-height:1.6; color:var(--ink-2); }
+#s8 .lnum{ flex:none; font:900 1.2cqw "Lato",sans-serif; color:var(--accent); }
+#s8 .ltext{ font-size:1.2cqw; line-height:1.6; color:var(--ink-2); }
 #s8 .ltext b{ font-weight:700; color:var(--ink); }
 
 /* --- 9枚目：読解メモモード ----------------------------------- */
@@ -163,17 +163,17 @@ body{
 #s10 .sh.strong{ box-shadow:0 .2cqw 1cqw rgba(38,51,63,.14); }
 #s10 .sh.flat{ background:var(--fill); }
 #s10 .shname{ font-size:1.8cqw; font-weight:700; line-height:1.3; margin:0 0 .8cqw; }
-#s10 .shcode{ font:400 .8cqw "Lato",monospace; line-height:1.6; color:var(--ink-2); background:var(--fill); border-radius:.3cqw; padding:.5cqw .7cqw; margin:0 0 .8cqw; overflow-wrap:anywhere; }
+#s10 .shcode{ font:400 1.2cqw "SFMono-Regular",Menlo,Consolas,monospace; line-height:1.6; color:var(--ink-2); background:var(--fill); border-radius:.3cqw; padding:.5cqw .7cqw; margin:0 0 .8cqw; }
 #s10 .sh.flat .shcode{ background:var(--card); color:var(--ink-3); }
-#s10 .shuse{ font-size:.8cqw; line-height:1.65; color:var(--ink-3); margin:0; }
+#s10 .shuse{ font-size:1.2cqw; line-height:1.65; color:var(--ink-3); margin:0; }
 
 /* --- 11枚目：図の色は透過で作る ------------------------------ */
-#s11 .tints{ flex:1; min-height:0; display:grid; grid-template-columns:repeat(3,1fr); gap:1.8cqw; align-content:center; }
-#s11 .tint{ display:flex; flex-direction:column; }
-#s11 .tintface{ height:8.4cqw; border-radius:.4cqw; border:1px solid var(--line); }
-#s11 .tintname{ font-size:1.8cqw; font-weight:700; line-height:1.3; margin:1cqw 0 .4cqw; }
-#s11 .tintcode{ font:400 .8cqw "Lato",monospace; line-height:1.6; color:var(--ink-3); margin:0 0 .5cqw; }
-#s11 .tintuse{ font-size:.8cqw; line-height:1.65; color:var(--ink-2); margin:0; }
+#s11 .ramp{ flex:1; min-height:0; display:grid; align-content:center; background:var(--card); border:1px solid var(--line); border-radius:.4cqw; overflow:hidden; }
+#s11 .rampline{ display:flex; align-items:stretch; gap:1.6cqw; padding-right:1.8cqw; }
+#s11 .rampface{ flex:none; width:20cqw; }
+#s11 .rampname{ flex:none; width:11cqw; align-self:center; font-size:1.8cqw; font-weight:700; line-height:1.3; margin:0; padding:1.8cqw 0; }
+#s11 .rampcode{ flex:none; width:16cqw; align-self:center; font:400 1.2cqw "SFMono-Regular",Menlo,Consolas,monospace; color:var(--ink-3); margin:0; }
+#s11 .rampwhy{ flex:1; align-self:center; font-size:1.2cqw; line-height:1.65; color:var(--ink-2); margin:0; }
 
 /* --- 12枚目：説明文は figcaption へ --------------------------- */
 #s12 .flowfig{ flex:1; min-height:0; margin:0; display:flex; flex-direction:column; justify-content:center; gap:1.4cqw; }
@@ -182,8 +182,8 @@ body{
 #s12 .flowsvg .node.made{ stroke:var(--accent); }
 #s12 .flowsvg .link{ stroke:var(--ink-3); stroke-width:.2cqw; }
 #s12 .flowsvg .arrowhead{ fill:var(--ink-3); }
-#s12 .flowsvg text{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-serif; font-size:.8cqw; font-weight:700; fill:var(--ink); }
-#s12 .flowcap{ font-size:.8cqw; line-height:1.75; color:var(--ink-3); margin:0; padding-left:1.1cqw; border-left:1px solid var(--line); max-width:80%; }
+#s12 .flowsvg text{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-serif; font-size:1.2cqw; font-weight:700; fill:var(--ink); }
+#s12 .flowcap{ font-size:1.2cqw; line-height:1.75; color:var(--ink-3); margin:0; padding-left:1.1cqw; border-left:1px solid var(--line); max-width:80%; }
 #s12 .flowcap b{ font-weight:700; color:var(--ink-2); }
 
 /* --- 13枚目：締め -------------------------------------------- */
@@ -206,7 +206,7 @@ body{
       <div class="cover-meta reveal" style="--i:3">
         <b>11トークン ／ 5段のスケール ／ 影は2段</b><br>
         この13枚は、ここで説明しているルール自身で組んである。<br>
-        部品はどれも、この見本のためにその場で作った。使い回していない。
+        13枚とも、その1枚のためだけに部品を作った。枚をまたいで共有するのは骨格とモードの契約だけ。
       </div>
     </div>
     <div class="footlogo">Design Rule</div>
@@ -222,7 +222,7 @@ body{
         <p class="modetag">Presentation</p>
         <div class="moderow"><div class="modekey">1枚の情報量</div><div class="modeval">見出し＋部品1つ＋一文</div></div>
         <div class="moderow"><div class="modekey">出典</div><div class="modeval">任意</div></div>
-        <div class="moderow"><div class="modekey">締めの一文</div><div class="modeval"><b>必須</b></div></div>
+        <div class="moderow"><div class="modekey">締めの一文</div><div class="modeval"><b>必須</b>（表紙と締めは除く）</div></div>
         <div class="moderow"><div class="modekey">.slide の余白</div><div class="modeval"><b>4.4cqw 5.2cqw 6cqw</b></div></div>
         <div class="moderow"><div class="modekey">本文の段</div><div class="modeval"><b>M ＝ 1.8cqw</b></div></div>
         <div class="moderow"><div class="modekey">.footlogo</div><div class="modeval"><b>800 ／ ink</b> でデッキ名</div></div>
@@ -286,7 +286,7 @@ body{
          animation-delay:calc(var(--i,0) * .12s); }
 <span class="cut">/* 全文は rules.html の02章に。ここは抜粋 */</span></pre>
     </div>
-    <p class="close reveal" style="--i:2">ここは<b>読まずに写す</b>ところ。直した瞬間に、8つのデッキがズレ始める。</p>
+    <p class="close reveal" style="--i:2">ここは<b>読まずに写す</b>ところ。測った8つのデッキで、ここがズレていたのは1つだけだった。</p>
     <div class="footlogo">Design Rule</div>
     <div class="deckfoot">04 / 13</div>
   </section>
@@ -328,13 +328,13 @@ body{
   <section class="slide" id="s7">
     <h2 class="reveal" style="--i:0">文字は5段だけ</h2>
     <div class="ladder">
-      <div class="rung xs reveal" style="--i:1"><span class="rungstep">XS</span><span class="rungsize">0.8cqw</span><span class="rungsample">出典とページ番号</span><span class="rungrole">LT＝出典・ページ／メモ＝出典・ラベル</span></div>
-      <div class="rung s reveal" style="--i:2"><span class="rungstep">S</span><span class="rungsize">1.2cqw</span><span class="rungsample">読解メモの本文</span><span class="rungrole">LT＝使わない／メモ＝本文</span></div>
-      <div class="rung m reveal" style="--i:3"><span class="rungstep">M</span><span class="rungsize">1.8cqw</span><span class="rungsample">本文と締めの一文</span><span class="rungrole">LT＝本文・締め／メモ＝見出し</span></div>
-      <div class="rung l reveal" style="--i:4"><span class="rungstep">L</span><span class="rungsize">2.8cqw</span><span class="rungsample">見出し</span><span class="rungrole">LT＝見出し／メモ＝表紙</span></div>
-      <div class="rung xl reveal" style="--i:5"><span class="rungstep">XL</span><span class="rungsize">5.2cqw</span><span class="rungsample">表紙</span><span class="rungrole">LT＝表紙／メモ＝使わない</span></div>
+      <div class="rung xs reveal" style="--i:1"><span class="rungstep">XS</span><span class="rungsize">0.8cqw</span><span class="rungsample">出典とページ番号</span><span class="rungrole">両モードとも 出典・ページ・ラベル</span></div>
+      <div class="rung s reveal" style="--i:2"><span class="rungstep">S</span><span class="rungsize">1.2cqw</span><span class="rungsample">表・コード・凡例</span><span class="rungrole">メモ＝本文／LT＝表・コード・凡例・図の説明</span></div>
+      <div class="rung m reveal" style="--i:3"><span class="rungstep">M</span><span class="rungsize">1.8cqw</span><span class="rungsample">本文と締めの一文</span><span class="rungrole">LT＝本文と締め／メモ＝見出し</span></div>
+      <div class="rung l reveal" style="--i:4"><span class="rungstep">L</span><span class="rungsize">2.8cqw</span><span class="rungsample">見出し</span><span class="rungrole">LT＝見出し／メモ＝表紙タイトル</span></div>
+      <div class="rung xl reveal" style="--i:5"><span class="rungstep">XL</span><span class="rungsize">5.2cqw</span><span class="rungsample">表紙</span><span class="rungrole">LT＝表紙タイトルのみ</span></div>
     </div>
-    <p class="close reveal" style="--i:6">段の間の値は作らない。足りないと感じたら、大きさではなく<b>太さと色</b>で差をつける。</p>
+    <p class="close reveal" style="--i:6">段の間の値は作らない。LTでSを使うのは<b>表・コード・凡例・図の説明</b>に限り、本文はMのまま。</p>
     <div class="footlogo">Design Rule</div>
     <div class="deckfoot">07 / 13</div>
   </section>
@@ -416,24 +416,24 @@ body{
   <!-- 11 ─ 図の色は透過で作る / LT -->
   <section class="slide" id="s11">
     <h2 class="reveal" style="--i:0">淡い色は透過で作る</h2>
-    <div class="tints">
-      <div class="tint reveal" style="--i:1">
-        <div class="tintface" style="background:rgba(217,130,43,.08)"></div>
-        <p class="tintname">面</p>
-        <p class="tintcode">rgba(217,130,43,.08)</p>
-        <p class="tintuse">図の中の広い塗り。ここを不透明の中間色にすると、地の色が変わったとき一緒に動かない。</p>
+    <div class="ramp">
+      <div class="rampline reveal" style="--i:1">
+        <div class="rampface" style="background:rgba(217,130,43,.08)"></div>
+        <p class="rampname">面</p>
+        <p class="rampcode">rgba(217,130,43,.08)</p>
+        <p class="rampwhy">図の中の広い塗り。不透明の中間色にすると、地の色を変えたとき一緒に動かなくなる。</p>
       </div>
-      <div class="tint reveal" style="--i:2">
-        <div class="tintface" style="background:rgba(217,130,43,.28)"></div>
-        <p class="tintname">帯</p>
-        <p class="tintcode">rgba(217,130,43,.28)</p>
-        <p class="tintuse">面と線の中間。チップの縁や、選んだ行の背景に。</p>
+      <div class="rampline reveal" style="--i:2">
+        <div class="rampface" style="background:rgba(217,130,43,.28)"></div>
+        <p class="rampname">帯</p>
+        <p class="rampcode">rgba(217,130,43,.28)</p>
+        <p class="rampwhy">面と線の中間。チップの縁や、選んだ行の背景に。同じ1色から濃さだけを変えて作る。</p>
       </div>
-      <div class="tint reveal" style="--i:3">
-        <div class="tintface" style="background:var(--accent)"></div>
-        <p class="tintname">線と文字</p>
-        <p class="tintcode">var(--accent)</p>
-        <p class="tintuse">透過しないのはここだけ。1枚に1役と数えるのは、この不透明の使い方のこと。</p>
+      <div class="rampline reveal" style="--i:3">
+        <div class="rampface" style="background:var(--accent)"></div>
+        <p class="rampname">線と文字</p>
+        <p class="rampcode">var(--accent)</p>
+        <p class="rampwhy">透過しないのはここだけ。1枚に1役と数えるのは、この不透明の使い方のこと。</p>
       </div>
     </div>
     <p class="close reveal" style="--i:4">新しい色名は作らない。淡いオレンジが要るなら、<b>accent の透過値</b>と書く。</p>
