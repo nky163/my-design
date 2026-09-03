@@ -13,7 +13,8 @@
   --surround:#171410; --paper:#F8F6F2; --card:#FFFFFF;
   --ink:#26333F; --ink-2:#4E5F60; --ink-3:#8B98A4;
   --line:#E6E1D9; --fill:#F1ECE4;
-  --accent:#D9822B; --neg:#DC4A4A; --pos:#12776A;
+  --accent:#C4711F; --neg:#DC4A4A; --pos:#008300;
+  --s1:#1c5cab; --s2:#199e70; --s3:#4a3aa7; --s4:#d55181;
 }
 *{ box-sizing:border-box; }
 body{
@@ -103,7 +104,7 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
 /* --- 6枚目：accent は1枚1役 ---------------------------------- */
 #s6 .pickone{ flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; gap:1.2cqw; width:74%; margin:0 auto; }
 #s6 .job{ display:flex; align-items:center; gap:1.4cqw; background:var(--card); border:1px solid var(--line); border-left:.34cqw solid var(--line); border-radius:.4cqw; padding:1.2cqw 1.6cqw; }
-#s6 .job.taken{ background:rgba(217,130,43,.08); border-color:rgba(217,130,43,.28); border-left-color:var(--accent); }
+#s6 .job.taken{ background:rgba(196,113,31,.08); border-color:rgba(196,113,31,.28); border-left-color:var(--accent); }
 #s6 .jobname{ flex:1; font-size:1.8cqw; font-weight:400; line-height:1.3; color:var(--ink-3); margin:0; }
 #s6 .job.taken .jobname{ font-weight:700; color:var(--accent); }
 #s6 .jobstate{ flex:none; font:700 .8cqw "Lato",sans-serif; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); }
@@ -187,11 +188,26 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
 #s12 .flowcap{ font-size:1.2cqw; line-height:1.75; color:var(--ink-3); margin:0; padding-left:1.1cqw; border-left:1px solid var(--line); max-width:80%; }
 #s12 .flowcap b{ font-weight:700; color:var(--ink-2); }
 
-/* --- 13枚目：締め -------------------------------------------- */
-#s13 .finale{ flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
-#s13 .finalerule{ width:7cqw; height:.32cqw; background:var(--accent); border-radius:999px; }
-#s13 .finaleline{ font-size:2.8cqw; font-weight:900; line-height:1.55; color:var(--ink); margin:2.6cqw 0 0; max-width:78%; }
-#s13 .finalemeta{ font-size:.8cqw; line-height:1.85; color:var(--ink-3); margin:2.8cqw 0 0; max-width:58%; }
+
+/* --- 13枚目：線で系列を見せる図 ---------------------------- */
+#s13 .chart{ flex:1; min-height:0; display:flex; gap:2.4cqw; align-items:center; }
+#s13 .plot{ flex:1; display:flex; flex-direction:column; }
+#s13 .plot svg{ width:100%; height:22cqw; display:block; }
+#s13 .plot .grid{ stroke:var(--line); stroke-width:1; }
+#s13 .plot .ln{ fill:none; stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round; }
+#s13 .xax{ display:flex; justify-content:space-between; font:400 .8cqw "Lato",sans-serif; color:var(--ink-3); margin-top:.7cqw; }
+#s13 .yax{ font:400 .8cqw "Lato",sans-serif; color:var(--ink-3); margin-bottom:.4cqw; }
+#s13 .keys{ flex:none; width:20cqw; display:flex; flex-direction:column; gap:1cqw; }
+#s13 .key{ display:flex; align-items:baseline; gap:.8cqw; font-size:1.2cqw; color:var(--ink-2); line-height:1.5; }
+#s13 .key i{ flex:none; width:1.8cqw; height:.32cqw; border-radius:999px; position:relative; top:-.35cqw; }
+#s13 .key b{ color:var(--ink); }
+#s13 .cap{ font-size:1.2cqw; line-height:1.7; color:var(--ink-2); margin:1cqw 0 0; }
+
+/* --- 14枚目：締め -------------------------------------------- */
+#s14 .finale{ flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+#s14 .finalerule{ width:7cqw; height:.32cqw; background:var(--accent); border-radius:999px; }
+#s14 .finaleline{ font-size:2.8cqw; font-weight:900; line-height:1.55; color:var(--ink); margin:2.6cqw 0 0; max-width:78%; }
+#s14 .finalemeta{ font-size:.8cqw; line-height:1.85; color:var(--ink-3); margin:2.8cqw 0 0; max-width:58%; }
 </style>
 </head>
 <body>
@@ -206,12 +222,12 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
       <p class="cover-lede reveal" style="--i:2">部品の一覧を配るのをやめた。決めるのは制約だけで、部品はその場で作る。</p>
       <div class="cover-meta reveal" style="--i:3">
         <b>11トークン ／ 5段のスケール ／ 影は2段</b><br>
-        この13枚は、ここで説明しているルール自身で組んである。<br>
-        13枚とも、その1枚のためだけに部品を作った。枚をまたいで共有するのは骨格とモードの契約だけ。
+        この14枚は、ここで説明しているルール自身で組んである。<br>
+        14枚とも、その1枚のためだけに部品を作った。枚をまたいで共有するのは骨格とモードの契約だけ。
       </div>
     </div>
     <div class="footlogo">Design Rule</div>
-    <div class="deckfoot">01 / 13</div>
+    <div class="deckfoot">01 / 14</div>
   </section>
 
   <!-- 2 ─ 2つのモード / LT -->
@@ -241,7 +257,7 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
     </div>
     <p class="close reveal" style="--i:3">違うのは<b>この6行だけ</b>。9枚目が読解メモモードの実演。</p>
     <div class="footlogo">Design Rule</div>
-    <div class="deckfoot">02 / 13</div>
+    <div class="deckfoot">02 / 14</div>
   </section>
 
   <!-- 3 ─ 2つのゾーン / LT -->
@@ -268,7 +284,7 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
     </div>
     <p class="close reveal" style="--i:3">左は<b>写すもの</b>、右は<b>作るもの</b>。この見本の部品は全部、右側で作った。</p>
     <div class="footlogo">Design Rule</div>
-    <div class="deckfoot">03 / 13</div>
+    <div class="deckfoot">03 / 14</div>
   </section>
 
   <!-- 4 ─ 骨格のコード / LT -->
@@ -277,7 +293,8 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
     <div class="skel">
 <pre class="skelcode reveal" style="--i:1"><span class="sel">:root</span>{ <span class="tok">--surround</span>:#171410; <span class="tok">--paper</span>:#F8F6F2; <span class="tok">--card</span>:#FFFFFF; <span class="tok">--ink</span>:#26333F;
        <span class="tok">--ink-2</span>:#4E5F60; <span class="tok">--ink-3</span>:#8B98A4; <span class="tok">--line</span>:#E6E1D9; <span class="tok">--fill</span>:#F1ECE4;
-       <span class="tok">--accent</span>:#D9822B; <span class="tok">--neg</span>:#DC4A4A; <span class="tok">--pos</span>:#12776A; }
+       <span class="tok">--accent</span>:#C4711F; <span class="tok">--neg</span>:#DC4A4A; <span class="tok">--pos</span>:#008300;
+  <span class="tok">--s1</span>:#1c5cab; <span class="tok">--s2</span>:#199e70; <span class="tok">--s3</span>:#4a3aa7; <span class="tok">--s4</span>:#d55181; }
 <span class="sel">.deck</span>{ width:min(100vw, 177.78vh); height:min(56.25vw, 100vh);
        container-type:size; overflow:hidden; background:var(--paper); }
 <span class="sel">.slide</span>{ position:absolute; inset:0; display:none;
@@ -289,11 +306,11 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
     </div>
     <p class="close reveal" style="--i:2">ここは<b>読まずに写す</b>ところ。測った8つのデッキで、ここがズレていたのは1つだけだった。</p>
     <div class="footlogo">Design Rule</div>
-    <div class="deckfoot">04 / 13</div>
+    <div class="deckfoot">04 / 14</div>
   </section>
   <!-- 5 ─ 11トークン / LT -->
   <section class="slide" id="s5">
-    <h2 class="reveal" style="--i:0">色は11個で足りる</h2>
+    <h2 class="reveal" style="--i:0">色は15個 — 意味の色11、系列の色4</h2>
     <div class="tokengrid">
       <div class="tokenchip reveal" style="--i:1"><div class="tokenface" style="background:var(--surround)"></div><div class="tokenmeta"><p class="tokenname">surround</p><p class="tokenhex">#171410</p></div></div>
       <div class="tokenchip reveal" style="--i:1"><div class="tokenface" style="background:var(--paper)"></div><div class="tokenmeta"><p class="tokenname">paper</p><p class="tokenhex">#F8F6F2</p></div></div>
@@ -303,13 +320,17 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
       <div class="tokenchip reveal" style="--i:1"><div class="tokenface" style="background:var(--ink)"></div><div class="tokenmeta"><p class="tokenname">ink</p><p class="tokenhex">#26333F</p></div></div>
       <div class="tokenchip reveal" style="--i:2"><div class="tokenface" style="background:var(--ink-2)"></div><div class="tokenmeta"><p class="tokenname">ink-2</p><p class="tokenhex">#4E5F60</p></div></div>
       <div class="tokenchip reveal" style="--i:2"><div class="tokenface" style="background:var(--ink-3)"></div><div class="tokenmeta"><p class="tokenname">ink-3</p><p class="tokenhex">#8B98A4</p></div></div>
-      <div class="tokenchip reveal" style="--i:2"><div class="tokenface" style="background:var(--accent)"></div><div class="tokenmeta"><p class="tokenname">accent</p><p class="tokenhex">#D9822B</p></div></div>
+      <div class="tokenchip reveal" style="--i:2"><div class="tokenface" style="background:var(--accent)"></div><div class="tokenmeta"><p class="tokenname">accent</p><p class="tokenhex">#C4711F</p></div></div>
       <div class="tokenchip reveal" style="--i:2"><div class="tokenface" style="background:var(--neg)"></div><div class="tokenmeta"><p class="tokenname">neg</p><p class="tokenhex">#DC4A4A</p></div></div>
-      <div class="tokenchip reveal" style="--i:2"><div class="tokenface" style="background:var(--pos)"></div><div class="tokenmeta"><p class="tokenname">pos</p><p class="tokenhex">#12776A</p></div></div>
+      <div class="tokenchip reveal" style="--i:2"><div class="tokenface" style="background:var(--pos)"></div><div class="tokenmeta"><p class="tokenname">pos</p><p class="tokenhex">#008300</p></div></div>
+      <div class="tokenchip reveal" style="--i:3"><div class="tokenface" style="background:var(--s1)"></div><div class="tokenmeta"><p class="tokenname">s1</p><p class="tokenhex">#1c5cab</p></div></div>
+      <div class="tokenchip reveal" style="--i:3"><div class="tokenface" style="background:var(--s2)"></div><div class="tokenmeta"><p class="tokenname">s2</p><p class="tokenhex">#199e70</p></div></div>
+      <div class="tokenchip reveal" style="--i:3"><div class="tokenface" style="background:var(--s3)"></div><div class="tokenmeta"><p class="tokenname">s3</p><p class="tokenhex">#4a3aa7</p></div></div>
+      <div class="tokenchip reveal" style="--i:3"><div class="tokenface" style="background:var(--s4)"></div><div class="tokenmeta"><p class="tokenname">s4</p><p class="tokenhex">#d55181</p></div></div>
     </div>
     <p class="close reveal" style="--i:3">この外の色は作らない。淡い面が要るときは、<b>トークンの透過値</b>で書く。</p>
     <div class="footlogo">Design Rule</div>
-    <div class="deckfoot">05 / 13</div>
+    <div class="deckfoot">05 / 14</div>
   </section>
 
   <!-- 6 ─ accent は1枚1役 / LT -->
@@ -322,7 +343,7 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
     </div>
     <p class="close reveal" style="--i:4">役は毎回選び直してよい。ただし<b>1枚のなかで2つ持たせない</b>。</p>
     <div class="footlogo">Design Rule</div>
-    <div class="deckfoot">06 / 13</div>
+    <div class="deckfoot">06 / 14</div>
   </section>
 
   <!-- 7 ─ 5段のスケール / LT -->
@@ -337,7 +358,7 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
     </div>
     <p class="close reveal" style="--i:6">段の間の値は作らない。LTでSを使うのは<b>表・コード・凡例・図の説明</b>に限り、本文はMのまま。</p>
     <div class="footlogo">Design Rule</div>
-    <div class="deckfoot">07 / 13</div>
+    <div class="deckfoot">07 / 14</div>
   </section>
 
   <!-- 8 ─ LTモードの1枚 / LT -->
@@ -352,14 +373,14 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
       </div>
       <div class="legend">
         <div class="lrow reveal" style="--i:2"><span class="lnum">1</span><span class="ltext">見出しは <b>L＝2.8cqw</b>。1行で言い切れる長さにする。</span></div>
-        <div class="lrow reveal" style="--i:3"><span class="lnum">2</span><span class="ltext">部品は<b>ひとつだけ</b>。この見本では13枚とも、その1枚のためだけの部品を作った。</span></div>
+        <div class="lrow reveal" style="--i:3"><span class="lnum">2</span><span class="ltext">部品は<b>ひとつだけ</b>。この見本では14枚とも、その1枚のためだけの部品を作った。</span></div>
         <div class="lrow reveal" style="--i:4"><span class="lnum">3</span><span class="ltext">締めの一文は <b>M＝1.8cqw</b>。LTモードでは必須。ここで言い切る。</span></div>
         <div class="lrow reveal" style="--i:5"><span class="lnum">4</span><span class="ltext">出典とページ番号は <b>XS＝0.8cqw</b>。位置は固定ゾーンが決めているので触らない。</span></div>
       </div>
     </div>
     <p class="close reveal" style="--i:6">1枚に収まらないときは足すのではなく、<b>2枚に割る</b>。</p>
     <div class="footlogo">Design Rule</div>
-    <div class="deckfoot">08 / 13</div>
+    <div class="deckfoot">08 / 14</div>
   </section>
   <!-- 9 ─ 読解メモモードの実演 / 読解メモ -->
   <section class="slide note" id="s9" style="padding:3.6cqw 5.2cqw 5.2cqw">
@@ -386,7 +407,7 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
       </div>
     </div>
     <div class="footlogo src"><a href="https://www.nngroup.com/articles/progressive-disclosure/">https://www.nngroup.com/articles/progressive-disclosure/</a></div>
-    <div class="deckfoot">09 / 13</div>
+    <div class="deckfoot">09 / 14</div>
   </section>
 
   <!-- 10 ─ 影は2段だけ / LT -->
@@ -411,7 +432,7 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
     </div>
     <p class="close reveal" style="--i:4">この2つ以外の影は作らない。<b>フィルタで足す影も使わない</b>。迷ったら影なしを選ぶ。</p>
     <div class="footlogo">Design Rule</div>
-    <div class="deckfoot">10 / 13</div>
+    <div class="deckfoot">10 / 14</div>
   </section>
 
   <!-- 11 ─ 図の色は透過で作る / LT -->
@@ -419,15 +440,15 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
     <h2 class="reveal" style="--i:0">淡い色は透過で作る</h2>
     <div class="ramp">
       <div class="rampline reveal" style="--i:1">
-        <div class="rampface" style="background:rgba(217,130,43,.08)"></div>
+        <div class="rampface" style="background:rgba(196,113,31,.08)"></div>
         <p class="rampname">面</p>
-        <p class="rampcode">rgba(217,130,43,.08)</p>
+        <p class="rampcode">rgba(196,113,31,.08)</p>
         <p class="rampwhy">図の中の広い塗り。不透明の中間色にすると、地の色を変えたとき一緒に動かなくなる。</p>
       </div>
       <div class="rampline reveal" style="--i:2">
-        <div class="rampface" style="background:rgba(217,130,43,.28)"></div>
+        <div class="rampface" style="background:rgba(196,113,31,.28)"></div>
         <p class="rampname">帯</p>
-        <p class="rampcode">rgba(217,130,43,.28)</p>
+        <p class="rampcode">rgba(196,113,31,.28)</p>
         <p class="rampwhy">面と線の中間。チップの縁や、選んだ行の背景に。同じ1色から濃さだけを変えて作る。</p>
       </div>
       <div class="rampline reveal" style="--i:3">
@@ -439,7 +460,7 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
     </div>
     <p class="close reveal" style="--i:4">新しい色名は作らない。淡いオレンジが要るなら、<b>accent の透過値</b>と書く。</p>
     <div class="footlogo">Design Rule</div>
-    <div class="deckfoot">11 / 13</div>
+    <div class="deckfoot">11 / 14</div>
   </section>
 
   <!-- 12 ─ 説明文は figcaption へ / LT -->
@@ -465,18 +486,43 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
     </figure>
     <p class="close reveal" style="--i:3">図が単体で意味を持たなくてよい。<b>読むのは図の外</b>で足りる。</p>
     <div class="footlogo">Design Rule</div>
-    <div class="deckfoot">12 / 13</div>
+    <div class="deckfoot">12 / 14</div>
   </section>
 
   <!-- 13 ─ 締め / LT -->
   <section class="slide" id="s13">
+    <h2 class="reveal" style="--i:0">線で系列を見せる</h2>
+    <div class="chart reveal" style="--i:1">
+      <div class="plot">
+        <p class="yax">1周あたりの所要（相対）</p>
+        <svg viewBox="0 0 400 150" preserveAspectRatio="none" role="img" aria-label="3系列の折れ線">
+          <line class="grid" x1="0" y1="149" x2="400" y2="149"></line>
+          <line class="grid" x1="0" y1="75"  x2="400" y2="75"></line>
+          <polyline class="ln" style="stroke:var(--s1)" points="0,22 80,30 160,44 240,66 320,92 400,118"></polyline>
+          <polyline class="ln" style="stroke:var(--s2)" points="0,40 80,44 160,52 240,58 320,64 400,70"></polyline>
+          <polyline class="ln" style="stroke:var(--s3)" points="0,96 80,92 160,88 240,86 320,84 400,82"></polyline>
+        </svg>
+        <div class="xax"><span>2021</span><span>2022</span><span>2023</span><span>2024</span><span>2025</span><span>2026</span></div>
+      </div>
+      <div class="keys">
+        <div class="key"><i style="background:var(--s1)"></i><span><b>実装</b>／エージェントへ移った分だけ落ちる</span></div>
+        <div class="key"><i style="background:var(--s2)"></i><span><b>テスト</b>／自動化が進むが人の確認は残る</span></div>
+        <div class="key"><i style="background:var(--s3)"></i><span><b>レビュー</b>／減らない。むしろ人の主戦場になる</span></div>
+      </div>
+    </div>
+    <p class="cap reveal" style="--i:2">系列は <code>--s1</code> から順に。<b>SVG の中に文字は1つも無い</b> — 軸の数値も凡例も HTML 側に出してあるので、viewBox を付けても5段のスケールは壊れない。線の太さは3本とも同じで、色だけが系列を担う。</p>
+    <div class="footlogo">Design Rule</div>
+    <div class="deckfoot">13 / 14</div>
+  </section>
+
+  <section class="slide" id="s14">
     <div class="finale">
       <div class="finalerule reveal" style="--i:0"></div>
       <p class="finaleline reveal" style="--i:1">部品を配るのをやめて、<br>守るべき線だけを配る。</p>
-      <p class="finalemeta reveal" style="--i:2">この13枚で使った部品クラスは、すべてこの見本のためだけに作ったもの。<br>ルール文書が定義する部品クラスは0個。固定ゾーンの6つの骨格クラスだけが共有される。</p>
+      <p class="finalemeta reveal" style="--i:2">この14枚で使った部品クラスは、すべてこの見本のためだけに作ったもの。<br>ルール文書が定義する部品クラスは0個。固定ゾーンの6つの骨格クラスだけが共有される。</p>
     </div>
     <div class="footlogo">Design Rule</div>
-    <div class="deckfoot">13 / 13</div>
+    <div class="deckfoot">14 / 14</div>
   </section>
 
 </div>

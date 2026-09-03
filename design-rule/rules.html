@@ -10,7 +10,8 @@
   --surround:#171410; --paper:#F8F6F2; --card:#FFFFFF;
   --ink:#26333F; --ink-2:#4E5F60; --ink-3:#8B98A4;
   --line:#E6E1D9; --fill:#F1ECE4;
-  --accent:#D9822B; --neg:#DC4A4A; --pos:#12776A;
+  --accent:#C4711F; --neg:#DC4A4A; --pos:#008300;
+  --s1:#1c5cab; --s2:#199e70; --s3:#4a3aa7; --s4:#d55181;
 }
 *{ box-sizing:border-box; }
 body{
@@ -93,7 +94,7 @@ h3.vsub{ font-size:15px; font-weight:700; margin:34px 0 8px; color:var(--ink); }
         <tr><td>固定ゾーン</td><td>トークン・骨格・影・キー送り（02章）</td><td><b>このCSSをそのままコピーする。変えない。</b></td></tr>
         <tr><td>自由ゾーン</td><td>部品・図・1枚の構成（03〜06章）</td><td><b>その場で作る。以下の制約内で自由。</b></td></tr>
 </tbody></table></div>
-    <p class="fine">ファイルは2つ。<code>design-rule/rules.html</code> がこの文書（正本）、<code>design-rule/sample.html</code> が見本デッキ13枚。見本はここに書いたルールだけで組んである。</p>
+    <p class="fine">ファイルは2つ。<code>design-rule/rules.html</code> がこの文書（正本）、<code>design-rule/sample.html</code> が見本デッキ14枚。見本はここに書いたルールだけで組んである。</p>
   </div>
 </div>
 
@@ -123,7 +124,8 @@ h3.vsub{ font-size:15px; font-weight:700; margin:34px 0 8px; color:var(--ink); }
   --surround:#171410; --paper:#F8F6F2; --card:#FFFFFF;
   --ink:#26333F; --ink-2:#4E5F60; --ink-3:#8B98A4;
   --line:#E6E1D9; --fill:#F1ECE4;
-  --accent:#D9822B; --neg:#DC4A4A; --pos:#12776A;
+  --accent:#C4711F; --neg:#DC4A4A; --pos:#008300;
+  --s1:#1c5cab; --s2:#199e70; --s3:#4a3aa7; --s4:#d55181;
 }
 *{ box-sizing:border-box; }
 body{
@@ -192,7 +194,7 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
 
 <section class="rule">
   <h2 class="head"><span class="num">03</span>色</h2>
-  <p class="dek">色はこの11個。外に色は作らない。地は純白にしない。ダークモードには対応しない — 会場のプロジェクタで白地に映す前提なので <code>prefers-color-scheme</code> は書かない。</p>
+  <p class="dek">色はこの15個。<b>意味を持つ色11個</b>と、<b>グラフ専用の系列色4個</b>に分かれる。外に色は作らない。地は純白にしない。ダークモードには対応しない — 会場のプロジェクタで白地に映す前提なので <code>prefers-color-scheme</code> は書かない。</p>
 <div class="tbl"><table>
     <thead><tr><th>トークン</th><th>値</th><th>役</th></tr></thead><tbody>
       <tr><td><span class="sw" style="background:#171410"></span>--surround</td><td>#171410</td><td>ステージの外側。16:9の外に出る余りの地</td></tr>
@@ -203,12 +205,25 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
       <tr><td><span class="sw" style="background:#8B98A4"></span>--ink-3</td><td>#8B98A4</td><td>出典・ページ番号・ラベル。読ませない文字</td></tr>
       <tr><td><span class="sw" style="background:#E6E1D9"></span>--line</td><td>#E6E1D9</td><td>罫線。区切りたいだけのときはまずこれ</td></tr>
       <tr><td><span class="sw" style="background:#F1ECE4"></span>--fill</td><td>#F1ECE4</td><td>塗りの面。地とカードの中間の温度。図に寒色の面を置かない</td></tr>
-      <tr><td><span class="sw" style="background:#D9822B"></span>--accent</td><td>#D9822B</td><td>強調。1枚に1役だけ</td></tr>
-      <tr><td><span class="sw" style="background:#DC4A4A"></span>--neg</td><td>#DC4A4A</td><td>Before 側のみ</td></tr>
-      <tr><td><span class="sw" style="background:#12776A"></span>--pos</td><td>#12776A</td><td>After 側のみ</td></tr>
+      <tr><td><span class="sw" style="background:#C4711F"></span>--accent</td><td>#C4711F</td><td>強調。1枚に1役だけ。グラフの中では使わない</td></tr>
+      <tr><td><span class="sw" style="background:#DC4A4A"></span>--neg</td><td>#DC4A4A</td><td>悪い・警告の状態。<b>必ずラベルを添える</b></td></tr>
+      <tr><td><span class="sw" style="background:#008300"></span>--pos</td><td>#008300</td><td>良い状態。<b>必ずラベルを添える</b></td></tr>
+      <tr><td><span class="sw" style="background:#1c5cab"></span>--s1</td><td>#1c5cab</td><td>系列1。グラフ専用</td></tr>
+      <tr><td><span class="sw" style="background:#199e70"></span>--s2</td><td>#199e70</td><td>系列2。グラフ専用</td></tr>
+      <tr><td><span class="sw" style="background:#4a3aa7"></span>--s3</td><td>#4a3aa7</td><td>系列3。グラフ専用</td></tr>
+      <tr><td><span class="sw" style="background:#d55181"></span>--s4</td><td>#d55181</td><td>系列4。グラフ専用</td></tr>
 </tbody></table></div>
-  <div class="callout"><b>accent は1枚1役。</b>「表紙タイトルの罫」「見出しの罫」「選んだ1行」「数字の単位」「締めの一語」のどれかひとつに絞る。役は枚ごとに選び直してよいが、1枚のなかで2つ持たせると、どこを見ればいいか分からなくなる。<br><b>neg / pos は Before / After 専用。</b>強調にも、良し悪しの色分けにも使わない。</div>
-  <p class="dek">淡い面が要るときは <code>rgba(&lt;トークンの値&gt;, α)</code> で作る。<b>不透明の中間色を作らない。</b>淡いオレンジの面なら <code>rgba(217,130,43,.08)</code>、その縁なら <code>rgba(217,130,43,.28)</code> のように、同じ1色から濃さだけを変える。中間色を混ぜて新しい色名にすると、地の色を変えたときにその面だけ一緒に動かなくなる。</p>
+  <div class="callout"><b>accent は1枚1役。</b>「表紙タイトルの罫」「見出しの罫」「選んだ1行」「数字の単位」「締めの一語」のどれかひとつに絞る。役は枚ごとに選び直してよいが、1枚のなかで2つ持たせると、どこを見ればいいか分からなくなる。<br><b>neg / pos は「良し悪しの状態」専用で、必ずラベルかアイコンを添える。</b>色だけで意味を担わせない — 赤と緑はどう選んでも色覚多様性で判別できない（この2色でも protan 下の ΔE は 4.5 しかない）。<b>Before / After のような中立な2項比較には neg / pos を使わず、系列色の s1 と s2 を使う。</b>そちらは全項目を通る組み合わせで、しかも「前＝赤＝悪」という決めつけも持ち込まない。</div>
+  <h3 class="vsub" style="margin-top:28px">系列色の使い方</h3>
+  <p class="dek"><b>s1 から順に、飛ばさず使う。</b>順序そのものが判別性の仕組みなので、好みで入れ替えない。系列色は<b>グラフの中だけ</b>で使い、地・文字・罫線・強調には使わない。逆にグラフの中では accent を使わない — 意味が二重になる。</p>
+<div class="tbl"><table>
+    <thead><tr><th>図の種類</th><th>本数の上限</th><th>理由</th></tr></thead><tbody>
+      <tr><td>折れ線・棒・積み上げ</td><td><b>4本</b></td><td>隣り合う系列だけが接するので、隣接ペアの判別で足りる</td></tr>
+      <tr><td>散布図・バブル</td><td><b>2本</b></td><td>どの2点も並びうるため全ペアで判別が要る。3本目で青と紫が正常視 ΔE 9.0 まで落ちる</td></tr>
+</tbody></table></div>
+  <p class="dek">上限を超えるなら<b>色を増やさず</b>、系列をまとめる／図を分ける／小さな図を並べる、のどれかにする。5本目の色を作った時点で、その図はもう色で読めていない。</p>
+  <p class="fine"><b>この4色は測って選んである。</b>地 <code>#F8F6F2</code> に対して4色とも 3:1 以上（投影で飛ばない）、彩度は下限以上（グレーに見えない）、隣接する2色の差は色覚多様性の模擬下で ΔE 16.6、正常視で 24.2。橙・赤・緑を外してあるのは、その3色相を accent / neg / pos が既に持っているため。<br>既知の近さが2組ある — <b>s2 と pos</b>（ΔE 11.9）、<b>s4 と neg</b>（ΔE 7.3）。どちらも neg / pos 側にラベルを必ず添えるので、色だけで区別させることにはならない。</p>
+  <p class="dek">淡い面が要るときは <code>rgba(&lt;トークンの値&gt;, α)</code> で作る。<b>不透明の中間色を作らない。</b>淡いオレンジの面なら <code>rgba(196,113,31,.08)</code>、その縁なら <code>rgba(196,113,31,.28)</code> のように、同じ1色から濃さだけを変える。中間色を混ぜて新しい色名にすると、地の色を変えたときにその面だけ一緒に動かなくなる。</p>
 </section>
 
 <section class="rule">
@@ -255,7 +270,15 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
     <li><b>説明文</b> — 図の中に書かない。<code>figcaption</code> か本文へ出す。図の中に置くのは短いラベルだけで、図が単体で意味を持たなくてよい。</li>
     <li><b>線</b> — 太線と基本線の<b>2種まで</b>（例: <code>.4cqw</code> と <code>.2cqw</code>）。破線が要るなら、この2種のどちらかの見た目を変えて作り、3本目の太さを増やさない。線幅も cqw で書く — 矢印の <code>marker</code> は既定が <code>markerUnits="strokeWidth"</code> で線幅に比例するので、線幅を <code>px</code> にすると矢印の頭だけが固定寸法になり、コンテナの大きさを変えたときに図の他の部分と比率が合わなくなる。</li>
   </ol>
-  <div class="callout"><b>SVG に <code>viewBox</code> を付けない。</b>viewBox があると CSS の <code>font-size</code> が viewBox の変換でそのまま拡大されるので、<code>font-size:.8cqw</code> と書いても .8cqw では描かれず、5段のスケールが黙って壊れる。<code>&lt;svg&gt;</code> の幅と高さは cqw で与え、<b>中の座標は % で書く</b>。</div>
+  <div class="callout"><b>SVG の中に文字を置くなら <code>viewBox</code> を付けない。</b>viewBox があると CSS の <code>font-size</code> が viewBox の変換でそのまま拡大されるので、<code>font-size:.8cqw</code> と書いても .8cqw では描かれず、5段のスケールが黙って壊れる。座標は <code>%</code> で書けば viewBox なしで組める。<br><b>逆に、文字を1つも置かない図なら viewBox を付けてよい。</b>折れ線のように座標計算が要る図ではviewBox のほうが素直で、線幅も座標と一緒に比例して伸縮する。その場合はラベル・凡例・軸の数値を<b>すべて HTML 側</b>に出す — それは05章の「説明文は図の外へ」と同じことを言っているだけで、新しい制約ではない。</div>
+  <h3 class="vsub" style="margin-top:28px">線で系列を見せる図</h3>
+  <ul>
+    <li><b>凡例を必ず置く。</b>2系列以上なら例外なく。色だけで「どれがどれか」を担わせない。4系列以下なら、線の右端に系列名を直接添えるやり方でもよい。</li>
+    <li><b>文字は系列色で塗らない。</b>値・軸・凡例の文字は <code>--ink</code> 系のまま。どの系列かは線が持ち、文字は読ませることに専念する。</li>
+    <li><b>縦軸は1本だけ。</b>単位の違う2指標を左右の軸に分けて重ねない。並べたいなら図を2つに分けるか、共通の基準で指数化する。2軸のグラフは、目盛りの取り方ひとつで相関があるように見せられてしまう。</li>
+    <li><b>線の太さは全系列で同じ。</b>太さで重要度を出したいときは、注目する1本以外を <code>--ink-3</code> に落とす。太さは「系列の違い」ではなく「主役かどうか」にだけ使う。</li>
+    <li><b>点は打たなくてよい。</b>打つなら全系列に打つ。データ点が少なく、どこが実測かを示したいときだけ。</li>
+  </ul>
 </section>
 
 <footer class="verify">
@@ -321,7 +344,7 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
 <footer class="note">
   検証に使った4デッキ（<code>memo/</code> 31枚、<code>agentic-qa/</code> 27枚、<code>sdlc-vibe-coding/</code> 55枚、<code>newrelic-ai-coding-2026/</code> 19枚）はこのルールより前に作られたもので、検証のために1文字も直していない。<br><br>
   <code>python3 tools/check-rules.py --baseline &lt;deck&gt;</code> で再現できるのは<b>骨格の行だけ</b> — 4デッキとも骨格の指摘が0件で、これが上表の「12/12（機械チェック）」にそのまま当たる。<b>それ以外の行は12枚を読んで数えたもので、このコマンドとは数が合わない。</b>コマンドはデッキ全体を見るので、選ばなかった枚の違反まで数えるため（例: sdlc 全体ではパレット外の色が2件出るが、<code>#FCF0E2</code> は選ばなかった8枚目にあり、<code>#FCF4EA</code> は <code>.bx-a</code> に定義されているだけでどこからも使われていない）。SVG の中の <code>font-size:14px</code> のような px はこのコマンドがそもそも見ていない。<br><br>
-  このルールの実装例は <code>design-rule/sample.html</code>（13枚）。各枚は、その枚が説明しているルールで自分自身が組んである。見本の部品クラスは1枚ずつ作り分けてあり、枚をまたいで共有しているものは0個 — ただしこれは<b>考え方を限界まで押した実演</b>で、05章が課している水準ではない。05章が求めるのは「部品をデッキの外へ持ち出さない」ことだけで、1つのデッキの中での再利用は妨げない。
+  このルールの実装例は <code>design-rule/sample.html</code>（14枚）。各枚は、その枚が説明しているルールで自分自身が組んである。見本の部品クラスは1枚ずつ作り分けてあり、枚をまたいで共有しているものは0個 — ただしこれは<b>考え方を限界まで押した実演</b>で、05章が課している水準ではない。05章が求めるのは「部品をデッキの外へ持ち出さない」ことだけで、1つのデッキの中での再利用は妨げない。
 </footer>
 
 </div>

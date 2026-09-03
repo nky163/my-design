@@ -10,7 +10,8 @@
   --surround:#171410; --paper:#F8F6F2; --card:#FFFFFF;
   --ink:#26333F; --ink-2:#4E5F60; --ink-3:#8B98A4;
   --line:#E6E1D9; --fill:#F1ECE4;
-  --accent:#D9822B; --neg:#DC4A4A; --pos:#12776A;
+  --accent:#C4711F; --neg:#DC4A4A; --pos:#008300;
+  --s1:#1c5cab; --s2:#199e70; --s3:#4a3aa7; --s4:#d55181;
 }
 *{ box-sizing:border-box; }
 body{
@@ -110,7 +111,7 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
 .track{ display:flex; gap:.2cqw; }
 .track i{ height:1.8cqw; border-radius:.2cqw; display:flex; align-items:center; justify-content:center; font-size:.8cqw; font-style:normal; white-space:nowrap; overflow:hidden; }
 .track.slow i{ background:var(--fill); color:var(--ink-2); }
-.track.fast i{ background:rgba(217,130,43,.18); color:var(--accent); }
+.track.fast i{ background:rgba(196,113,31,.18); color:var(--accent); }
 .cycrow .after{ height:.2cqw; background:var(--line); margin-top:.5cqw; }
 
 /* 図：単一とチーム（Trend 2） — 形の違いだけを見せる */
@@ -118,7 +119,7 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
 .arch > div{ flex:1; display:flex; flex-direction:column; align-items:center; gap:.5cqw; }
 .arch .at{ font:700 .8cqw "Lato",sans-serif; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin:0 0 .3cqw; }
 .node{ width:100%; text-align:center; font-size:.8cqw; padding:.5cqw .4cqw; border-radius:.3cqw; background:var(--fill); color:var(--ink-2); }
-.node.lead{ background:rgba(217,130,43,.18); color:var(--accent); font-weight:700; }
+.node.lead{ background:rgba(196,113,31,.18); color:var(--accent); font-weight:700; }
 .drop{ width:.2cqw; height:.9cqw; background:var(--line); }
 .fan{ display:flex; gap:.4cqw; width:100%; }
 .fan .node{ flex:1; padding:.5cqw .2cqw; }
@@ -198,7 +199,7 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
         </div>
         <div class="gapline">
           <p class="gl"><span>「完全に委任できた」と答えた割合</span><b>0〜20%</b></p>
-          <div class="gapbar"><i style="width:20%;background:rgba(217,130,43,.28)"></i></div>
+          <div class="gapbar"><i style="width:20%;background:rgba(196,113,31,.28)"></i></div>
         </div>
       </div>
       <p class="lede" style="margin-top:1.4cqw">Anthropic の Societal Impacts チームの調査。開発者は仕事の約6割で AI を使っているが、丸ごと任せられたと答えるのはごく一部にとどまる。</p>

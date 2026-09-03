@@ -10,10 +10,14 @@ import re
 import sys
 
 TOKENS = {
+    # 面と文字
     "--surround": "#171410", "--paper": "#F8F6F2", "--card": "#FFFFFF",
     "--ink": "#26333F", "--ink-2": "#4E5F60", "--ink-3": "#8B98A4",
-    "--line": "#E6E1D9", "--fill": "#F1ECE4", "--accent": "#D9822B",
-    "--neg": "#DC4A4A", "--pos": "#12776A",
+    "--line": "#E6E1D9", "--fill": "#F1ECE4",
+    # 意味を持つ色（ラベル併記が必須）
+    "--accent": "#C4711F", "--neg": "#DC4A4A", "--pos": "#008300",
+    # 系列色（グラフ専用・固定順・折れ線/棒は4本まで）
+    "--s1": "#1c5cab", "--s2": "#199e70", "--s3": "#4a3aa7", "--s4": "#d55181",
 }
 PALETTE = {v.upper() for v in TOKENS.values()}
 SCALE = {"0.8", ".8", "1.2", "1.8", "2.8", "5.2"}
