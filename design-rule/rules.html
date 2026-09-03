@@ -117,7 +117,7 @@ h3.vsub{ font-size:15px; font-weight:700; margin:34px 0 8px; color:var(--ink); }
 
 <section class="rule">
   <h2 class="head"><span class="num">02</span>そのままコピーする骨格</h2>
-  <p class="dek">ここは読まずに写すところ。<b>1文字も変えない</b>。16:9のステージを1つ作り、中は container query 単位（cqw）だけで組む。<code>rem</code> や <code>px</code> を混ぜた瞬間に比率が崩れる。書体の読み込み1行は04章。</p>
+  <p class="dek">ここは読まずに写すところ。写すのは<b>CSS・HTMLの外枠・キー送りの3つ</b>で、<b>1文字も変えない</b>。16:9のステージを1つ作り、中は container query 単位（cqw）だけで組む。<code>rem</code> や <code>px</code> を混ぜた瞬間に比率が崩れる。書体の読み込み1行は04章。</p>
 <pre>
 :root{
   --surround:#171410; --paper:#F8F6F2; --card:#FFFFFF;
@@ -146,6 +146,22 @@ body{
 @keyframes revealIn{ to{ opacity:1; transform:none; } }
 @media (prefers-reduced-motion:reduce){ .reveal{ animation:none; opacity:1; transform:none; } }
 </pre>
+  <p class="dek">HTML の外枠。<code>&lt;body&gt;</code> の中はこの形にする。<b><code>id="deck"</code> を落とさない</b> — 下のキー送りが <code>getElementById('deck')</code> でこれを掴むので、id が無いと読み込みの時点で落ち、送りが全部死ぬ。</p>
+<pre>
+&lt;div class="deck" id="deck"&gt;
+
+  &lt;section class="slide is-active"&gt;
+    &lt;h2 class="reveal" style="--i:0"&gt;見出し&lt;/h2&gt;
+    &lt;div class="footlogo"&gt;デッキ名&lt;/div&gt;
+    &lt;div class="deckfoot"&gt;01 / 13&lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;section class="slide"&gt;
+    …
+  &lt;/section&gt;
+
+&lt;/div&gt;
+</pre>
   <p class="dek">キー送り。<code>&lt;/body&gt;</code> の直前に置く。矢印キーと空白で送る。これも変えない。</p>
 <pre>
 &lt;script&gt;
@@ -170,7 +186,7 @@ body{
 })();
 &lt;/script&gt;
 </pre>
-  <p class="fine">HTML 側で守るのは3つだけ。全体を <code>&lt;div class="deck" id="deck"&gt;</code> で囲む／各枚は <code>&lt;section class="slide"&gt;</code> で、1枚目にだけ <code>is-active</code> を足す／動きは <code>class="reveal"</code> と <code>style="--i:N"</code> だけで、これ以上増やさない。ページ番号は <code>.deckfoot</code>（右下）、デッキ名か原典は <code>.footlogo</code>（左下）に置く — どちらも位置だけが骨格で決まっており、中身と見た目は01章のモードの表に従う。なお骨格は base の <code>font-size</code> を持たないので、サイズを書かない要素はブラウザ既定の16px（cqw に追従しない固定値）で描かれる。文字を置く要素には必ず04章の5段のどれかを明示する。</p>
+  <p class="fine">この3つを写せば、それで動くデッキになる。あとは中身を入れるだけ。<code>is-active</code> は1枚目にだけ足す（送りはこのクラスの付け替えで動く）。動きは <code>class="reveal"</code> と <code>style="--i:N"</code> だけで、これ以上増やさない。ページ番号は <code>.deckfoot</code>（右下）、デッキ名か原典は <code>.footlogo</code>（左下）に置く — どちらも位置だけが骨格で決まっており、中身と見た目は01章のモードの表に従う。なお骨格は base の <code>font-size</code> を持たないので、サイズを書かない要素はブラウザ既定の16px（cqw に追従しない固定値）で描かれる。文字を置く要素には必ず04章の5段のどれかを明示する。</p>
 </section>
 
 <section class="rule">
@@ -290,7 +306,7 @@ body{
 </tbody></table></div>
 
   <h3 class="vsub">0件だったルールの扱い</h3>
-  <div class="callout">どの実物も満たさなかったルールは4つ。<b>うち3つは残し、1つは緩めた。</b><br>残した3つは意図して課す制約なので、上の2つの表に <span class="star">★これは新しく課す制約</span> と印を付けた — ①文字サイズを5段に絞る（04章、承認済み）／②SVG に viewBox を付けない（06章）／③<code>body</code> の書体スタックを1行のまま使う（02・04章）。<b>この3つは既存デッキをこのルールで測ると必ず落ちる。新しく組むデッキにだけ課す。</b><br>緩めたのは「部品クラスをその1枚のために作る」（05章）。12枚が全滅したのは実物の側の問題ではなく、<b>ルールが本来の狙いより広く網を掛けていた</b>から。配るまいとしていたのはデッキ間のカタログで、1つのデッキの中の再利用は最初から禁じる対象ではなかった。05章をデッキ単位に書き換えた。<br><b>ルールごと削ったものは無い。</b>旧文書の「図はSVGで描く」のような実態に反する条文は、今回の12枚からは出なかった（memo と agentic-qa は SVG を1つも持たず、sdlc と newrelic の図も大半が div＋flex だが、06章は既に「div でも SVG でもよい」と書いてある）。</div>
+  <div class="callout">どの実物も満たさなかったルールは5つ。<b>うち4つは残し、1つは緩めた。</b><br>残した4つは意図して課す制約なので、上の2つの表に <span class="star">★これは新しく課す制約</span> と印を付けた — ①文字サイズを5段に絞る（04章、承認済み）／②SVG に viewBox を付けない（06章）／③<code>body</code> の書体スタックを1行のまま使う（02・04章）／④<code>--surround</code> をトークンとして持つ（02・03章。4デッキとも <code>#171410</code> を直書きしている。値は同じなので、変わるのは地の色を変えたときに1箇所で済むかどうか）。<b>この4つは既存デッキをこのルールで測ると必ず落ちる。新しく組むデッキにだけ課す。</b><br>緩めたのは「部品クラスをその1枚のために作る」（05章）。12枚が全滅したのは実物の側の問題ではなく、<b>ルールが本来の狙いより広く網を掛けていた</b>から。配るまいとしていたのはデッキ間のカタログで、1つのデッキの中の再利用は最初から禁じる対象ではなかった。05章をデッキ単位に書き換えた。<br><b>ルールごと削ったものは無い。</b>旧文書の「図はSVGで描く」のような実態に反する条文は、今回の12枚からは出なかった（memo と agentic-qa は SVG を1つも持たず、sdlc と newrelic の図も大半が div＋flex だが、06章は既に「div でも SVG でもよい」と書いてある）。</div>
 
   <h3 class="vsub">3〜4デッキが共通でやっているのに、ここに書いていないこと</h3>
   <p class="dek">逆向きの抜けも探した。次の3件は実物の 4/4 が共通でやっているが、この文書は何も言っていない。<b>今回はルールとして足していない</b> — 記録だけ残す。</p>
@@ -302,7 +318,8 @@ body{
 </footer>
 
 <footer class="note">
-  検証に使った4デッキ（<code>memo/</code> 31枚、<code>agentic-qa/</code> 27枚、<code>sdlc-vibe-coding/</code> 55枚、<code>newrelic-ai-coding-2026/</code> 19枚）はこのルールより前に作られたもので、検証のために1文字も直していない。機械で測れる分（色・影・文字サイズ・単位・骨格）は <code>python3 tools/check-rules.py --baseline &lt;deck&gt;</code> で再現できる。<br><br>
+  検証に使った4デッキ（<code>memo/</code> 31枚、<code>agentic-qa/</code> 27枚、<code>sdlc-vibe-coding/</code> 55枚、<code>newrelic-ai-coding-2026/</code> 19枚）はこのルールより前に作られたもので、検証のために1文字も直していない。<br><br>
+  <code>python3 tools/check-rules.py --baseline &lt;deck&gt;</code> で再現できるのは<b>骨格の行だけ</b> — 4デッキとも骨格の指摘が0件で、これが上表の「12/12（機械チェック）」にそのまま当たる。<b>それ以外の行は12枚を読んで数えたもので、このコマンドとは数が合わない。</b>コマンドはデッキ全体を見るので、選ばなかった枚の違反まで数えるため（例: sdlc 全体ではパレット外の色が2件出るが、<code>#FCF0E2</code> は選ばなかった8枚目にあり、<code>#FCF4EA</code> は <code>.bx-a</code> に定義されているだけでどこからも使われていない）。SVG の中の <code>font-size:14px</code> のような px はこのコマンドがそもそも見ていない。<br><br>
   このルールの実装例は <code>design-rule/sample.html</code>（13枚）。各枚は、その枚が説明しているルールで自分自身が組んである。見本の部品クラスは1枚ずつ作り分けてあり、枚をまたいで共有しているものは0個 — ただしこれは<b>考え方を限界まで押した実演</b>で、05章が課している水準ではない。05章が求めるのは「部品をデッキの外へ持ち出さない」ことだけで、1つのデッキの中での再利用は妨げない。
 </footer>
 
