@@ -128,9 +128,10 @@ h3.vsub{ font-size:15px; font-weight:700; margin:34px 0 8px; color:var(--ink); }
 *{ box-sizing:border-box; }
 body{
   margin:0; background:var(--surround); color:var(--ink);
-  font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-serif;
+  font-family:"Lato","Noto Sans JP",sans-serif;
   display:flex; align-items:center; justify-content:center; min-height:100vh;
 }
+h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-serif; }
 .deck{
   position:relative;
   width:min(100vw, 177.78vh); height:min(56.25vw, 100vh);
@@ -212,7 +213,7 @@ body{
 
 <section class="rule">
   <h2 class="head"><span class="num">04</span>文字</h2>
-  <p class="dek">書体は <code>"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-serif</code> の1行だけ。Lato は和字を持たないので、欧文と数字だけが Lato で描かれ、和文はその次の Zen Kaku Gothic New に落ちる（無い環境では Noto Sans JP）。<b>順番がそのまま仕組み</b>で、入れ替えると欧文まで和文書体で描かれる。読み込みは <code>&lt;head&gt;</code> に1行:</p>
+  <p class="dek">書体は2行。<code>body</code> は <code>"Lato","Noto Sans JP",sans-serif</code>、見出しと太字だけ <code>h1,h2,h3,b,strong</code> で <code>"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-serif</code> に差し替える。Lato は和字を持たないので、どちらの行でも<b>欧文と数字だけが Lato</b> で描かれ、和文は次の書体に落ちる。<b>順番がそのまま仕組み</b>で、入れ替えると欧文まで和文書体で描かれる。<b>本文に Zen Kaku を使わない</b>のは、あれが見出し用の表示書体だからで、長い本文に敷くと字面が重くなる。読み込みは <code>&lt;head&gt;</code> に1行:</p>
 <pre>
 &lt;link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&amp;family=Lato:wght@400;700;900&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap"&gt;
 </pre>
@@ -299,14 +300,14 @@ body{
 <div class="tbl"><table>
     <thead><tr><th>骨格の行</th><th>実物4デッキ</th><th>扱い</th></tr></thead><tbody>
       <tr><td><code>.deck</code> の寸法・<code>container-type</code>・<code>.slide.is-active</code>・<code>.reveal</code>・<code>@keyframes</code></td><td>4/4 が完全一致</td><td>骨格として機能している</td></tr>
-      <tr><td><code>body{ font-family }</code> の1行</td><td>4/4 が <code>"Lato","Noto Sans JP"</code> に縮め、Zen Kaku Gothic New は <code>h1,h2,h3,b,strong</code> に別立てする</td><td><span class="star">★これは新しく課す制約</span>。04章は1行のままを求めている</td></tr>
+      <tr><td><code>body{ font-family }</code> の行</td><td>4/4 が <code>"Lato","Noto Sans JP"</code> に縮め、Zen Kaku Gothic New は <code>h1,h2,h3,b,strong</code> に別立てする</td><td>この検証を受けて<b>04章を実物に合わせた</b>。以前は1行に統合していて和文の本文まで表示書体で組まれていた。実物4つが揃って別立てしていたのは理由があり、そちらが正しかった</td></tr>
       <tr><td><code>:root</code> の <code>--surround</code></td><td>4/4 が定義せず、<code>body</code> に <code>#171410</code> を直書き</td><td>値は同じ。トークン化は<span class="star">★新しく課す</span></td></tr>
       <tr><td><code>.slide{ padding }</code></td><td>LTの2デッキは一致。読解メモの2デッキは骨格側で <code>3.6cqw 5.2cqw 5.2cqw</code> に書き換えている</td><td>値は01章の表と一致。<b>置き場所だけが違う</b>（01章は枚ごとの上書きを求めている）</td></tr>
       <tr><td>そのほか</td><td>3/4 が <code>.deck</code> に radial-gradient を重ね（sdlc のみ一致）、4/4 が <code>.deckfoot</code>／<code>.footlogo</code> の <code>bottom</code> を <code>2cqw</code> か <code>2.3cqw</code> にし、4/4 がキー送りに同じ拡張を足している</td><td>記録のみ。ルールは変えない</td></tr>
 </tbody></table></div>
 
   <h3 class="vsub">0件だったルールの扱い</h3>
-  <div class="callout">どの実物も満たさなかったルールは5つ。<b>うち4つは残し、1つは緩めた。</b><br>残した4つは意図して課す制約なので、上の2つの表に <span class="star">★これは新しく課す制約</span> と印を付けた — ①文字サイズを5段に絞る（04章、承認済み）／②SVG に viewBox を付けない（06章）／③<code>body</code> の書体スタックを1行のまま使う（02・04章）／④<code>--surround</code> をトークンとして持つ（02・03章。4デッキとも <code>#171410</code> を直書きしている。値は同じなので、変わるのは地の色を変えたときに1箇所で済むかどうか）。<b>この4つは既存デッキをこのルールで測ると必ず落ちる。新しく組むデッキにだけ課す。</b><br>緩めたのは「部品クラスをその1枚のために作る」（05章）。12枚が全滅したのは実物の側の問題ではなく、<b>ルールが本来の狙いより広く網を掛けていた</b>から。配るまいとしていたのはデッキ間のカタログで、1つのデッキの中の再利用は最初から禁じる対象ではなかった。05章をデッキ単位に書き換えた。<br><b>ルールごと削ったものは無い。</b>旧文書の「図はSVGで描く」のような実態に反する条文は、今回の12枚からは出なかった（memo と agentic-qa は SVG を1つも持たず、sdlc と newrelic の図も大半が div＋flex だが、06章は既に「div でも SVG でもよい」と書いてある）。</div>
+  <div class="callout">どの実物も満たさなかったルールは5つ。<b>うち3つは残し、1つは緩め、1つはこちらが実物に合わせた。</b><br>残した3つは意図して課す制約なので、上の2つの表に <span class="star">★これは新しく課す制約</span> と印を付けた — ①文字サイズを5段に絞る（04章、承認済み）／②SVG に viewBox を付けない（06章）／③<code>--surround</code> をトークンとして持つ（02・03章。4デッキとも <code>#171410</code> を直書きしている。値は同じなので、変わるのは地の色を変えたときに1箇所で済むかどうか）。<b>この3つは既存デッキをこのルールで測ると必ず落ちる。新しく組むデッキにだけ課す。合わせにいったのは <code>body</code> の書体で、以前は1行に統合していたため和文の本文まで Zen Kaku Gothic New（見出し用の表示書体）で組まれていた。4デッキが揃って <code>h1,h2,h3,b,strong</code> に別立てしていたのには理由があり、そちらが正しかったので02・04章を書き換えた。</b><br>緩めたのは「部品クラスをその1枚のために作る」（05章）。12枚が全滅したのは実物の側の問題ではなく、<b>ルールが本来の狙いより広く網を掛けていた</b>から。配るまいとしていたのはデッキ間のカタログで、1つのデッキの中の再利用は最初から禁じる対象ではなかった。05章をデッキ単位に書き換えた。<br><b>ルールごと削ったものは無い。</b>旧文書の「図はSVGで描く」のような実態に反する条文は、今回の12枚からは出なかった（memo と agentic-qa は SVG を1つも持たず、sdlc と newrelic の図も大半が div＋flex だが、06章は既に「div でも SVG でもよい」と書いてある）。</div>
 
   <h3 class="vsub">3〜4デッキが共通でやっているのに、ここに書いていないこと</h3>
   <p class="dek">逆向きの抜けも探した。次の3件は実物の 4/4 が共通でやっているが、この文書は何も言っていない。<b>今回はルールとして足していない</b> — 記録だけ残す。</p>
