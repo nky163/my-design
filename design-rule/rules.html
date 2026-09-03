@@ -74,6 +74,11 @@ tr:last-child td{ border-bottom:none; }
   margin:64px 0 0; padding:20px 0 90px; border-top:1px solid var(--line);
   color:var(--ink-3); font-size:12.5px; max-width:72ch;
 }
+
+footer.verify{ margin-top:56px; padding-top:56px; border-top:1px solid var(--line); }
+h2.vhead{ font-size:22px; font-weight:700; margin:0 0 10px; border-left:4px solid var(--ink-3); padding-left:14px; }
+h3.vsub{ font-size:15px; font-weight:700; margin:34px 0 8px; color:var(--ink); }
+.verify .star{ color:var(--accent); font-weight:700; white-space:nowrap; }
 </style>
 </head>
 <body>
@@ -236,7 +241,69 @@ body{
   <div class="callout"><b>SVG に <code>viewBox</code> を付けない。</b>viewBox があると CSS の <code>font-size</code> が viewBox の変換でそのまま拡大されるので、<code>font-size:.8cqw</code> と書いても .8cqw では描かれず、5段のスケールが黙って壊れる。<code>&lt;svg&gt;</code> の幅と高さは cqw で与え、<b>中の座標は % で書く</b>。</div>
 </section>
 
+<footer class="verify">
+  <h2 class="vhead">検証 — このルールは何に当てたか</h2>
+  <p class="dek">見本デッキ <code>design-rule/sample.html</code> はこのルールと同時に書いたので、見本が満たすことは根拠にならない。そこで、<b>このルールが存在する前に作られ、以後1文字も直していない4デッキ</b>から各3枚、計12枚を取って当てた。12枚は表紙・章扉・締めを避け、図・表・数値カードを持つ枚だけを選んである。</p>
+<div class="tbl"><table>
+    <thead><tr><th>デッキ（モード／総枚数）</th><th>枚</th><th>載っているもの</th><th>これで試せること</th></tr></thead><tbody>
+      <tr><td>memo（読解メモ／31）</td><td>9</td><td>数値カード4つ＋本文</td><td>数字の組版、面の罫</td></tr>
+      <tr><td>memo</td><td>12</td><td>2列タイムライン＋矢印</td><td>div＋flex の図、説明文の置き場</td></tr>
+      <tr><td>memo</td><td>15</td><td>pos／neg の2面比較</td><td>neg・pos の使いどころ</td></tr>
+      <tr><td>agentic-qa（読解メモ／27）</td><td>5</td><td>数値カード2つ＋本文</td><td>数字と出典の同居</td></tr>
+      <tr><td>agentic-qa</td><td>11</td><td>引用ブロック＋数値カード2つ</td><td>1枚に部品を2つ置いた場合</td></tr>
+      <tr><td>agentic-qa</td><td>18</td><td>用語パネル（塗りの面）</td><td>図を持たない枚の対照</td></tr>
+      <tr><td>sdlc-vibe-coding（LT登壇／55）</td><td>21</td><td>figure＋SVG図＋figcaption</td><td>図の説明文、線の種類、viewBox</td></tr>
+      <tr><td>sdlc-vibe-coding</td><td>39</td><td>figure＋SVG図（実線・破線・強調線）＋figcaption</td><td>線が何種まで増えるか</td></tr>
+      <tr><td>sdlc-vibe-coding</td><td>44</td><td>figure＋div比較図＋figcaption、neg／pos</td><td>Before／After の色</td></tr>
+      <tr><td>newrelic-ai-coding-2026（LT登壇／19）</td><td>04</td><td>表2つ＋数値カード4つ</td><td>表の罫、影</td></tr>
+      <tr><td>newrelic-ai-coding-2026</td><td>07</td><td>SVGドーナツ＋凡例＋バッジ</td><td>色をトークンで書くか直値で書くか</td></tr>
+      <tr><td>newrelic-ai-coding-2026</td><td>13</td><td>div棒グラフ＋軸ラベル＋脚注</td><td>図の色と線、accent を何役に使うか</td></tr>
+</tbody></table></div>
+
+  <h3 class="vsub">結果</h3>
+<div class="tbl"><table>
+    <thead><tr><th>ルール</th><th>満たす枚数</th><th>判定</th></tr></thead><tbody>
+      <tr><td>骨格をそのまま使っている（02）</td><td>12/12 ／ 0/12</td><td>読みで割れる。機械チェック（<code>.deck</code> の寸法・<code>container-type</code>・<code>.slide</code> の横 padding・<code>.reveal</code> の <code>.55s</code> と <code>.12s</code>）は 12/12。<b>「1文字も変えない」の字義では 0/12</b> — 差分は下表</td></tr>
+      <tr><td>色が11トークンとその透過値のみ（03）</td><td>12/12</td><td>満たす。CSS・inline style・SVGの <code>fill</code>／<code>stroke</code> 属性まで見て、11個の外の色は1つも無い。ただし4デッキとも <code>--surround</code> を作らず <code>#171410</code> を直書きし、newrelic 07 は凡例の色を <code>#26333F</code> のように値で書く。<b>値としては全て11個の中</b></td></tr>
+      <tr><td>影が2段のみ（05）</td><td>11/12</td><td>ほぼ満たす。外れたのは newrelic 04 の <code>rgba(38,51,63,.05)</code> 1件（弱の <code>.06</code> を <code>.05</code> にした）。<code>drop-shadow</code> は12枚とも0件</td></tr>
+      <tr><td>図の説明文が figcaption か本文にある（06）</td><td>11/11</td><td>満たす。図を持つ11枚すべてが説明を figcaption か本文に出している（agentic-qa 18 は図を持たないので該当外）。ただし<b>「図の中は短いラベルだけ」は 7/11</b> — memo 12・15、sdlc 21・44 は図の中に文章を置いている</td></tr>
+      <tr><td>図の線が2種以内（06）</td><td>10/12</td><td>外れたのは sdlc の SVG 2枚。21 が3種（1.5／1.6／1.8）、39 が4種（1.4／1.5／1.6／1.8）。div で描いた図は10枚とも2種以内</td></tr>
+      <tr><td>読解メモは出典を持つ（01）</td><td>6/6</td><td>満たす。読解メモの6枚は全て、見出し直下に著者・媒体・日付を、左下に原典URLを持つ。LT登壇の6枚は出典が任意なので該当外</td></tr>
+      <tr><td>単位が cqw のみ（05）</td><td>8/12</td><td>外れたのは4枚。sdlc 21・39 は SVG 内の文字を <code>14px</code>／<code>12px</code>／<code>11px</code> で、newrelic 04 は表の罫を <code>2px</code>、13 は軸を <code>1.5px</code> で書いている</td></tr>
+      <tr><td>文字サイズが5段のみ（04）</td><td>0/12</td><td><span class="star">★これは新しく課す制約</span>（04章に既記載・承認済み）。4デッキは1デッキあたり20〜33種類の文字サイズを使う</td></tr>
+      <tr><td>accent は1枚に1役（03）</td><td>3/12</td><td>実物が最もよく外す自由ゾーンのルール。全枚共通の飾り（走りヘッダの番号・左下のドット）を除いて数えて 3/12、含めれば 0/12。newrelic 13 は5役</td></tr>
+      <tr><td>neg／pos は Before／After 専用（03）</td><td>1/2</td><td>neg／pos を使った枚は12枚中2枚。sdlc 44 は前後比較で正しく使い、memo 15 は「優れた／平均的なエンジニア」の良し悪しの色分けに使っている（03章が禁じている用法）</td></tr>
+      <tr><td>SVG に viewBox を付けない（06）</td><td>0/3</td><td><span class="star">★これは新しく課す制約</span>。SVGを持つ3枚すべてが <code>viewBox</code> を付けており、sdlc 21・39 はその結果として図の中の文字を px で書いている。<b>ルールが避けようとした壊れ方が、実物にそのまま出ている</b></td></tr>
+      <tr><td>部品クラスを枚をまたいで共有しない（05）</td><td>0/12</td><td><span class="star">★これは新しく課す制約</span>。12枚とも13〜22個のクラスを他の枚と共有している。この文書が部品カタログを配るのをやめた理由そのもの</td></tr>
+      <tr><td>ダークモードに対応しない（03）</td><td>12/12</td><td>満たす。4デッキとも <code>prefers-color-scheme</code> を1度も書いていない</td></tr>
+</tbody></table></div>
+
+  <h3 class="vsub">02章の骨格と実物の差分</h3>
+  <p class="dek">「骨格をそのまま使っている」が読みで割れるのは、実物の外し方が一様だからで、ばらついているからではない。<b>4デッキが同じ場所を同じように外している。</b></p>
+<div class="tbl"><table>
+    <thead><tr><th>骨格の行</th><th>実物4デッキ</th><th>扱い</th></tr></thead><tbody>
+      <tr><td><code>.deck</code> の寸法・<code>container-type</code>・<code>.slide.is-active</code>・<code>.reveal</code>・<code>@keyframes</code></td><td>4/4 が完全一致</td><td>骨格として機能している</td></tr>
+      <tr><td><code>body{ font-family }</code> の1行</td><td>4/4 が <code>"Lato","Noto Sans JP"</code> に縮め、Zen Kaku Gothic New は <code>h1,h2,h3,b,strong</code> に別立てする</td><td><span class="star">★これは新しく課す制約</span>。04章は1行のままを求めている</td></tr>
+      <tr><td><code>:root</code> の <code>--surround</code></td><td>4/4 が定義せず、<code>body</code> に <code>#171410</code> を直書き</td><td>値は同じ。トークン化は<span class="star">★新しく課す</span></td></tr>
+      <tr><td><code>.slide{ padding }</code></td><td>LTの2デッキは一致。読解メモの2デッキは骨格側で <code>3.6cqw 5.2cqw 5.2cqw</code> に書き換えている</td><td>値は01章の表と一致。<b>置き場所だけが違う</b>（01章は枚ごとの上書きを求めている）</td></tr>
+      <tr><td>そのほか</td><td>3/4 が <code>.deck</code> に radial-gradient を重ね（sdlc のみ一致）、4/4 が <code>.deckfoot</code>／<code>.footlogo</code> の <code>bottom</code> を <code>2cqw</code> か <code>2.3cqw</code> にし、4/4 がキー送りに同じ拡張を足している</td><td>記録のみ。ルールは変えない</td></tr>
+</tbody></table></div>
+
+  <h3 class="vsub">0件だったルールの扱い</h3>
+  <div class="callout">どの実物も満たさなかったルールは4つ。<b>削ったものは無い。</b>4つとも意図して課す制約なので残し、上の2つの表に <span class="star">★これは新しく課す制約</span> と印を付けた — ①文字サイズを5段に絞る（04章、承認済み）／②部品クラスを枚をまたいで共有しない（05章）／③SVG に viewBox を付けない（06章）／④<code>body</code> の書体スタックを1行のまま使う（02・04章）。<b>既存デッキをこのルールで測ると必ず落ちる。新しく組むデッキにだけ課す。</b><br>実態に反していたので削るべきルールは、今回の12枚からは出なかった。旧文書の「図はSVGで描く」がその例だったが — memo と agentic-qa は SVG を1つも持たず、sdlc と newrelic の図もほとんどが div＋flex — この文書は既に「div でも SVG でもよい」と書いてある。</div>
+
+  <h3 class="vsub">3〜4デッキが共通でやっているのに、ここに書いていないこと</h3>
+  <p class="dek">逆向きの抜けも探した。次の4件は実物の 4/4 が共通でやっているが、この文書は何も言っていない。<b>今回はルールとして足していない</b> — 記録だけ残す。</p>
+  <ul>
+    <li><b>クリックで送る</b>（4/4）— 左右14%の当たり判定、丸い prev／next ボタン、3.2秒で消える操作ヒント、<code>deck.focus()</code>。02章のキー送りは矢印キーと空白だけで「これも変えない」と書いてあるが、実物は4つとも同じ拡張をしている。</li>
+    <li><b>数字に <code>font-variant-numeric:tabular-nums</code></b>（4/4）— 骨格は <code>.deckfoot</code> にだけ付けているが、実物は数値カード・年号・順位にも付ける。04章は数字の扱いを何も書いていない。</li>
+    <li><b><code>html,body{ height:100% }</code> と <code>body{ overflow:hidden }</code></b>（4/4）— 骨格に無い。無いとステージの外にスクロールが出る。</li>
+    <li><b>表紙 <code>s-cover</code> と締め <code>s-close</code> という2つの特別な枚</b>（4/4。newrelic はさらに章扉 <code>s-section</code> を3枚持つ）— 01章は「表紙と締めの1枚は除く」と例外として触れるだけで、この2枚が構造として存在することを書いていない。</li>
+  </ul>
+</footer>
+
 <footer class="note">
+  検証に使った4デッキ（<code>memo/</code> 31枚、<code>agentic-qa/</code> 27枚、<code>sdlc-vibe-coding/</code> 55枚、<code>newrelic-ai-coding-2026/</code> 19枚）はこのルールより前に作られたもので、検証のために1文字も直していない。機械で測れる分（色・影・文字サイズ・単位・骨格）は <code>python3 tools/check-rules.py --baseline &lt;deck&gt;</code> で再現できる。<br><br>
   このルールの実装例は <code>design-rule/sample.html</code>（13枚）。各枚は、その枚が説明しているルールで自分自身が組んである。見本が作った部品クラスはすべてその1枚専用で、枚をまたいで共有しているものは0個。
 </footer>
 
