@@ -102,6 +102,28 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
 .prow .pt{ font-size:1.2cqw; font-weight:700; flex:none; width:16cqw; line-height:1.5; }
 .prow .pd{ font-size:1.2cqw; line-height:1.7; color:var(--ink-2); }
 
+/* 図：周期の圧縮（Trend 1） — 同じ段階が短くなることだけを見せる */
+.cyc{ display:flex; flex-direction:column; gap:1.2cqw; }
+.cycrow .cl{ display:flex; justify-content:space-between; align-items:baseline; margin:0 0 .5cqw; }
+.cycrow .cl span{ font-size:.8cqw; color:var(--ink-2); }
+.cycrow .cl b{ font:700 .8cqw "Lato",sans-serif; color:var(--ink-3); letter-spacing:.08em; text-transform:uppercase; }
+.track{ display:flex; gap:.2cqw; }
+.track i{ height:1.8cqw; border-radius:.2cqw; display:flex; align-items:center; justify-content:center; font-size:.8cqw; font-style:normal; white-space:nowrap; overflow:hidden; }
+.track.slow i{ background:var(--fill); color:var(--ink-2); }
+.track.fast i{ background:rgba(217,130,43,.18); color:var(--accent); }
+.cycrow .after{ height:.2cqw; background:var(--line); margin-top:.5cqw; }
+
+/* 図：単一とチーム（Trend 2） — 形の違いだけを見せる */
+.arch{ display:flex; gap:1.4cqw; }
+.arch > div{ flex:1; display:flex; flex-direction:column; align-items:center; gap:.5cqw; }
+.arch .at{ font:700 .8cqw "Lato",sans-serif; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin:0 0 .3cqw; }
+.node{ width:100%; text-align:center; font-size:.8cqw; padding:.5cqw .4cqw; border-radius:.3cqw; background:var(--fill); color:var(--ink-2); }
+.node.lead{ background:rgba(217,130,43,.18); color:var(--accent); font-weight:700; }
+.drop{ width:.2cqw; height:.9cqw; background:var(--line); }
+.fan{ display:flex; gap:.4cqw; width:100%; }
+.fan .node{ flex:1; padding:.5cqw .2cqw; }
+.serial{ display:flex; flex-direction:column; align-items:center; gap:.5cqw; width:100%; }
+
 /* 締め */
 .end{ flex:1; display:flex; flex-direction:column; justify-content:center; max-width:70%; }
 .end .q{ font-size:1.8cqw; font-weight:700; line-height:1.6; margin:0 0 1.4cqw; }
@@ -196,7 +218,23 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
   <h2 class="reveal" style="--i:0">Trend 1 — ソフトウェア開発ライフサイクルが劇的に変わる</h2>
   <div class="two reveal" style="--i:1">
     <div>
-      <p class="lede">従来の SDLC の各段階は残る。変わるのは<b>1周にかかる時間</b>で、週〜月の周期が時間〜日に縮む。実装・テスト・ドキュメントがエージェント側に寄り、監視が直接次の反復へ戻る。</p>
+      <figure style="margin:0 0 1.2cqw">
+        <div class="cyc">
+          <div class="cycrow">
+            <p class="cl"><span>従来の SDLC</span><b>週〜月 / 1周</b></p>
+            <div class="track slow">
+              <i style="flex:1.4">要件・計画</i><i style="flex:1.2">設計</i><i style="flex:1.6">実装</i><i style="flex:1.3">テスト</i><i style="flex:1">レビュー</i><i style="flex:1">リリース</i><i style="flex:1.1">監視</i>
+            </div>
+          </div>
+          <div class="cycrow">
+            <p class="cl"><span>エージェント前提の SDLC</span><b>時間〜日 / 1周</b></p>
+            <div class="track fast" style="width:34%">
+              <i style="flex:1.4"></i><i style="flex:1.2"></i><i style="flex:1.6"></i><i style="flex:1.3"></i><i style="flex:1"></i><i style="flex:1"></i><i style="flex:1.1"></i>
+            </div>
+          </div>
+        </div>
+        <figcaption class="lede" style="margin-top:.8cqw">下の帯も段は同じ7つ。<b>段の数も順序も変わらず、1周の長さだけが縮む</b>。監視がそのまま次の反復へ戻り、人の手は「実装」から「レビュー」へ移る。</figcaption>
+      </figure>
       <ul class="preds">
         <li><b>抽象化の進化：</b>書く・直す・保守するという戦術的作業が AI へ移り、人は設計と「何を作るか」の判断に寄る</li>
         <li><b>役割の変容：</b>ソフトウェアエンジニアであることが、コードを書くことから<b>エージェントを指揮すること</b>へ移る</li>
@@ -221,7 +259,46 @@ h1,h2,h3,b,strong{ font-family:"Lato","Zen Kaku Gothic New","Noto Sans JP",sans-
   <h2 class="reveal" style="--i:0">Trend 2 — 単一エージェントが協調するチームへ</h2>
   <div class="two reveal" style="--i:1">
     <div>
-      <p class="lede">単一エージェントは1つのコンテキスト窓で順番に処理する。<b>階層型</b>ではオーケストレーターがタスクを分解し、専門エージェントがそれぞれ専用のコンテキストで並行に動き、結果を統合する。</p>
+      <figure style="margin:0 0 1.2cqw">
+        <div class="arch">
+          <div>
+            <p class="at">単一エージェント</p>
+            <div class="node">開発者</div>
+            <div class="drop"></div>
+            <div class="node lead">1つのコンテキスト窓</div>
+            <div class="drop"></div>
+            <div class="serial">
+              <div class="node">タスク 1</div>
+              <div class="node">タスク 2</div>
+              <div class="node">タスク 3</div>
+            </div>
+            <div class="drop"></div>
+            <div class="node">出力</div>
+          </div>
+          <div>
+            <p class="at">階層型チーム</p>
+            <div class="node">開発者</div>
+            <div class="drop"></div>
+            <div class="node lead">オーケストレーター</div>
+            <div class="drop"></div>
+            <div class="fan">
+              <div class="node">設計</div>
+              <div class="node">実装</div>
+              <div class="node">検証</div>
+              <div class="node">レビュー</div>
+            </div>
+            <div class="fan">
+              <div class="node" style="background:transparent;color:var(--ink-3)">窓</div>
+              <div class="node" style="background:transparent;color:var(--ink-3)">窓</div>
+              <div class="node" style="background:transparent;color:var(--ink-3)">窓</div>
+              <div class="node" style="background:transparent;color:var(--ink-3)">窓</div>
+            </div>
+            <div class="drop"></div>
+            <div class="node">統合された出力</div>
+          </div>
+        </div>
+        <figcaption class="lede" style="margin-top:.8cqw">左は1つの窓で順番に処理するので、窓の大きさがそのまま扱える範囲になる。右は<b>専門ごとに別々の窓</b>を持たせて並行に動かし、統合する。違いは速さではなく<b>扱える複雑さ</b>。</figcaption>
+      </figure>
       <ul class="preds">
         <li><b>マルチエージェントが単一を置き換える：</b>別々のコンテキスト窓をまたぐ並列推論で性能を引き出す</li>
       </ul>
