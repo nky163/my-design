@@ -117,7 +117,7 @@ h3.vsub{ font-size:15px; font-weight:700; margin:34px 0 8px; color:var(--ink); }
 
 <section class="rule">
   <h2 class="head"><span class="num">02</span>そのままコピーする骨格</h2>
-  <p class="dek">ここは読まずに写すところ。写すのは<b>CSS・HTMLの外枠・キー送りの3つ</b>で、<b>1文字も変えない</b>。16:9のステージを1つ作り、中は container query 単位（cqw）だけで組む。<code>rem</code> や <code>px</code> を混ぜた瞬間に比率が崩れる。書体の読み込み1行は04章。</p>
+  <p class="dek">ここは読まずに写すところ。写すのは<b>CSS・HTMLの外枠・キー送りの3つ</b>。うち <b>CSSとキー送りは1文字も変えない</b>。外枠だけは形を写して中身を入れ替える — 変えてよいのは見出し・デッキ名・ページ番号などの中身と枚数で、タグの構造と <code>id="deck"</code> と各クラス名は変えない。16:9のステージを1つ作り、中は container query 単位（cqw）だけで組む。<code>rem</code> や <code>px</code> を混ぜた瞬間に比率が崩れる。書体の読み込み1行は04章。</p>
 <pre>
 :root{
   --surround:#171410; --paper:#F8F6F2; --card:#FFFFFF;
