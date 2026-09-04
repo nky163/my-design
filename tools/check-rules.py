@@ -2,7 +2,7 @@
 """デザインルールの機械チェック。
 
 使い方: python3 tools/check-rules.py design-rule/sample.html
-        python3 tools/check-rules.py --baseline memo/sample.html ...
+        python3 tools/check-rules.py --baseline outputs/<deck>/sample.html ...
 
 --baseline は違反を報告するが exit 0 で終わる（実物デッキの現状把握用）。
 """
